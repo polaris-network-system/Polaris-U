@@ -1,105 +1,255 @@
 <section class="mx-3">
-  <div class="columns">
-    <div class="column">
-    </div>
-    <div class="column is-1">
-      <a class="button is-success is-outline is-light js-modal-trigger m-1" data-target="item_edit">
-        <span class="icon">
-          <i class="fas fa-edit fa-1x"></i>
-        </span>
-      </a>
-      <a class="button is-info is-outline is-light js-modal-trigger m-1" data-target="item_new">
-        <span class="icon">
-          <i class="fas fa-plus fa-1x"></i>
-        </span>
-      </a>
-    </div>
-  </div>
-  <div class="my-3">
-      <!-- フォームの部品 -->
-      <div class="columns">
-        <div class="column">
-          <input type="text" id="item_search_word" name="item_search_word" class="input mx-4" placeholder="機材ID,登録名などで検索">
+    <div class="columns">
+        <div class="column"></div>
+        <div class="column is-1">
+            <a class="button is-success is-outline is-light js-modal-trigger m-1" data-target="item_edit_modal">
+                <span class="icon">
+                    <i class="fas fa-edit fa-1x"></i>
+                </span>
+            </a>
+            <a class="button is-info is-outline is-light js-modal-trigger m-1" data-target="item_new_modal">
+                <span class="icon">
+                    <i class="fas fa-plus fa-1x"></i>
+                </span>
+            </a>
         </div>
-        <div class="column is-one-fifth">
-          <input type="submit" value="検索" class="button is-outline is-info mx-4" id="item_search_btn">
-        </div>
-      </div>
-  </div>
-  <p class="sub-title" id="item_result_text"></p>
-  <div id="itemdata">
-    <div class="hero">
-      <div class="hero-body my-6">
-        <p class="title">loading...</p>
-      </div>
     </div>
-  </div>
-  <div>
-    <table width="100%"　border=1 class="table" id="item_sort_table">
-      <tr id="item_header">
-      </tr>
-    </table>
-  </div>
-</section>
-<script
-  src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
-</script>
-<script>
-  var item_search_btn = document.getElementById('item_search_btn');
-  item_search_btn.addEventListener('click', function() {
-    item_search_btn.value = "検索中..."
-    var item_data_area = document.getElementById('itemdata')
-    var data_table = document.getElementById('item_sort_table')
-    content = '<div id="itemdata"><div class="hero"><div class="hero-body my-6"><p class="title">Searching...</p></div></div></div>'
-    item_data_area.insertAdjacentHTML("afterbegin",content)
-    
-    data_table.textContent = ""
-    content = '<tr id="item_header"></tr>'
-    data_table.insertAdjacentHTML("afterbegin",content)
-    $(function() {
-    google.script.run.withSuccessHandler(itemShowThings)
-        .getData("item_list_search",document.getElementById('item_search_word').value);
-    });
-  })
-</script>
-<script>
-  // The code in this function runs when the page is loaded.
-  $(function() {
-    google.script.run.withSuccessHandler(itemShowThings)
-        .getData("item_list_default");
-  });
-
-  function itemShowThings(things) {
-    if(things.length == 1){
-      var item_data_area = document.getElementById('itemdata')
-      item_data_area.textContent = ""
-      content = '<div id="itemdata"><div class="hero"><div class="hero-body my-6"><p class="title">該当なし</p></div></div></div>'
-      item_data_area.insertAdjacentHTML("afterbegin",content)
-    }else{
-      var data_item_header = document.getElementById('item_header')
-      var data_body = document.getElementById('item_sort_table')
-      var item_data_area = document.getElementById('itemdata')
-      item_data_area.textContent = ""
-
-      element_tmp = ""
-      for (var i = 0; i < things[0].length; i++){
-        element_tmp += '<th>' + things[0][i] + '</th>'
-      }
-      data_item_header.insertAdjacentHTML('beforebegin',element_tmp)
-
-      for (var i = 1; i < things.length; i++) {
-        var trele = document.createElement("tr")
-        for (var j=0; j < things[i].length; j++) {
-          var tdele = document.createElement("td")
-          var text = document.createTextNode(String(things[i][j]))
-          tdele.appendChild(text)
-          trele.appendChild(tdele)
+    <!-- モーダル　新規作成 -->
+    <div class="modal" id="item_new_modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <section class="modal-card-body">
+                <div class="content">
+                    <!-- フォームの部品 -->
+                    <div class="my-4">
+                        <label for="id">機材ID</label>
+                        <input type="text" id="item_new_id" name="id" class="input" placeholder="購入(作成)年下２桁＋コード＋ナンバー" />
+                    </div>
+                    <div class="my-4">
+                        <label for="name">登録名</label>
+                        <input type="text" id="item_new_name" name="name" class="input" placeholder="登録名を入力" />
+                    </div>
+                    <div class="my-4">
+                        <label for="date">登録日</label>
+                        <input type="date" id="item_new_date" name="date" class="input" />
+                    </div>
+                    <div class="my-4">
+                        <label for="message">付加事項</label>
+                        <input type="text" id="item_new_message" name="message" class="input" placeholder="付加事項を入力" />
+                    </div>
+                    <div class="my-4">
+                        <label for="content">特記事項</label>
+                        <input type="text" id="item_new_content" name="content" class="input" placeholder="特記事項を入力" />
+                    </div>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <a class="button is-info is-fullwidth is-outlined" id="item_new_save">登録する</a>
+            </footer>
+        </div>
+    </div>
+    <script>
+        var item_new_btn = document.getElementById('item_new_save');
+        item_new_btn.addEventListener('click', function () {
+            item_new_btn.value = '送信中...';
+            $(function () {
+                google.script.run
+                    .withSuccessHandler(item_new_showThings)
+                    .sendData(
+                        'item_new',
+                        document.getElementById('item_new_id').value,
+                        document.getElementById('item_new_name').value,
+                        document.getElementById('item_new_date').value,
+                        document.getElementById('item_new_message').value,
+                        document.getElementById('item_new_content').value
+                    );
+            });
+        });
+        function item_new_showThings(things) {
+            message = '成功しました\nID：' + things[0] + '\n名前：' + things[1];
+            window.alert(message);
+            document.getElementById('item_new_id').value = '';
+            document.getElementById('item_new_name').value = '';
+            document.getElementById('item_new_date').value = '';
+            document.getElementById('item_new_message').value = '';
+            document.getElementById('item_new_content').value = '';
+            item_new_btn.value = '登録する';
         }
-        data_body.appendChild(trele)
-      }
-      content = "一致件数：" + (things.length -1) + "件"
-      document.getElementById('item_result_text').textContent = content
+    </script>
+
+    <!-- モーダル　編集 -->
+    <div class="modal" id="item_edit_modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <section class="modal-card-body">
+                <div class="content">
+                    <section>
+                        <!-- フォームの部品 -->
+                        <div class="my-4">
+                            <label for="id">機材ID</label>
+                            <input type="text" id="item_edit_id" name="id" class="input" placeholder="購入(作成)年下２桁＋コード＋ナンバー" />
+                        </div>
+                        <input type="submit" value="照会" class="button is-outline is-info" id="item_edit_btn_inquiry" /><br /><br />
+                        <strong id="item_edit_result" class="has-text-danger"></strong>
+                        <div class="my-4">
+                            <label for="name">登録名</label>
+                            <input type="text" id="item_edit_name" name="name" class="input" />
+                        </div>
+                        <div class="my-4">
+                            <label for="status">状態</label>
+                            <input type="text" id="item_edit_status" name="status" class="input" placeholder="状態を入力" />
+                        </div>
+                        <div class="my-4">
+                            <label for="message">付加事項</label>
+                            <input type="text" id="item_edit_message" name="message" class="input" placeholder="付加事項を入力" />
+                        </div>
+                        <div class="my-4">
+                            <label for="content">特記事項</label>
+                            <textarea type="text" id="item_edit_content" name="content" class="input" placeholder="特記事項を入力" style="height: 150px"></textarea>
+                        </div>
+                    </section>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <a class="button is-info is-fullwidth is-outlined" id="item_edit_btn_update">更新</a>
+                <a class="button is-danger is-fullwidth is-outlined" id="item_edit_delete" disabled>削除</a>
+            </footer>
+        </div>
+    </div>
+    <script>
+        var item_edit_btn_inquiry = document.getElementById('item_edit_btn_inquiry');
+        item_edit_btn_inquiry.addEventListener('click', function () {
+            item_edit_btn_inquiry.value = '照会中...';
+            $(function () {
+                google.script.run.withSuccessHandler(item_edit_showThings_inquiry).getData('item_inquery', document.getElementById('item_edit_id').value);
+            });
+        });
+        function item_edit_showThings_inquiry(things) {
+            if (things[0] == 'bad') {
+                document.getElementById('item_edit_result').textContent = '入力された機材IDに該当する機材がありません';
+                document.getElementById('item_edit_name').value = '';
+                document.getElementById('item_edit_status').value = '';
+                document.getElementById('item_edit_message').value = '';
+                document.getElementById('item_edit_content').value = '';
+                item_edit_btn_inquiry.value = '照会';
+                document.getElementById('item_edit_btn_update').disabled = true;
+                document.getElementById('item_edit_delete').disabled = true;
+            } else {
+                document.getElementById('item_edit_result').textContent = '';
+                document.getElementById('item_edit_btn_update').disabled = false;
+                document.getElementById('item_edit_delete').disabled = false;
+                document.getElementById('item_edit_name').value = things[1];
+                document.getElementById('item_edit_status').value = things[2];
+                document.getElementById('item_edit_message').value = things[3];
+                document.getElementById('item_edit_content').value = things[4];
+                item_edit_btn_inquiry.value = '照会';
+            }
+        }
+    </script>
+    <script>
+        var item_edit_btn_update = document.getElementById('item_edit_btn_update');
+        item_edit_btn_update.addEventListener('click', function () {
+            item_edit_btn_update.value = '送信中...';
+            $(function () {
+                google.script.run
+                    .withSuccessHandler(item_edit_showThings)
+                    .sendData(
+                        'item_update',
+                        document.getElementById('item_edit_id').value,
+                        document.getElementById('item_edit_name').value,
+                        document.getElementById('item_edit_status').value,
+                        document.getElementById('item_edit_message').value,
+                        document.getElementById('item_edit_content').value
+                    );
+            });
+        });
+        function item_edit_showThings(things) {
+            message = '成功しました\nID：' + things[0] + '\n名前：' + things[1];
+            window.alert(message);
+            item_edit_btn_update.value = '更新';
+        }
+    </script>
+
+    <div class="my-3">
+        <!-- フォームの部品 -->
+        <div class="columns">
+            <div class="column">
+                <input type="text" id="item_search_word" name="item_search_word" class="input mx-4" placeholder="機材ID,登録名などで検索" />
+            </div>
+            <div class="column is-one-fifth">
+                <input type="submit" value="検索" class="button is-outline is-info mx-4" id="item_search_btn" />
+            </div>
+        </div>
+    </div>
+    <p class="sub-title m-3" id="item_result_text"></p>
+    <div id="itemdata">
+        <div class="hero">
+            <div class="hero-body my-6">
+                <p class="title">loading...</p>
+            </div>
+        </div>
+    </div>
+    <div>
+        <table width="100%" 　border="1" class="table" id="item_sort_table">
+            <tr id="item_header"></tr>
+        </table>
+    </div>
+</section>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    var item_search_btn = document.getElementById('item_search_btn');
+    item_search_btn.addEventListener('click', function () {
+        item_search_btn.value = '検索中...';
+        var item_data_area = document.getElementById('itemdata');
+        var data_table = document.getElementById('item_sort_table');
+        content = '<div id="itemdata"><div class="hero"><div class="hero-body my-6"><p class="title">Searching...</p></div></div></div>';
+        item_data_area.insertAdjacentHTML('afterbegin', content);
+
+        data_table.textContent = '';
+        content = '<tr id="item_header"></tr>';
+        data_table.insertAdjacentHTML('afterbegin', content);
+        $(function () {
+            google.script.run.withSuccessHandler(itemShowThings).getData('item_list_search', document.getElementById('item_search_word').value);
+        });
+    });
+</script>
+<script>
+    // The code in this function runs when the page is loaded.
+    $(function () {
+        google.script.run.withSuccessHandler(itemShowThings).getData('item_list_default');
+    });
+
+    function itemShowThings(things) {
+        if (things.length == 1) {
+            var item_data_area = document.getElementById('itemdata');
+            item_data_area.textContent = '';
+            content = '<div id="itemdata"><div class="hero"><div class="hero-body my-6"><p class="title">該当なし</p></div></div></div>';
+            item_data_area.insertAdjacentHTML('afterbegin', content);
+        } else {
+            var data_item_header = document.getElementById('item_header');
+            var data_body = document.getElementById('item_sort_table');
+            var item_data_area = document.getElementById('itemdata');
+            item_data_area.textContent = '';
+
+            element_tmp = '';
+            for (var i = 0; i < things[0].length; i++) {
+                element_tmp += '<th>' + things[0][i] + '</th>';
+            }
+            data_item_header.insertAdjacentHTML('beforebegin', element_tmp);
+
+            for (var i = 1; i < things.length; i++) {
+                var trele = document.createElement('tr');
+                for (var j = 0; j < things[i].length; j++) {
+                    var tdele = document.createElement('td');
+                    var text = document.createTextNode(String(things[i][j]));
+                    tdele.appendChild(text);
+                    trele.appendChild(tdele);
+                }
+                data_body.appendChild(trele);
+            }
+            content = '一致件数：' + (things.length - 1) + '件';
+            document.getElementById('item_result_text').textContent = content;
+        }
+        item_search_btn.value = '検索';
     }
-    item_search_btn.value = "検索"
-  }
 </script>

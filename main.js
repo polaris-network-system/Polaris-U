@@ -320,7 +320,7 @@ function sendData() {
 
     case "item_new":
       item_db.appendRow([arguments[1],arguments[2],arguments[3],"健康",arguments[4],arguments[5]]);
-      item_db.getRange().setNumberFormat('@')
+      item_db.getRange(item_db.getLastRow(),3).setNumberFormat('@')
       return [arguments[1],arguments[2]]
     
     case "item_update":
