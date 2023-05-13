@@ -1,0 +1,160 @@
+<html lang="ja">
+   <head>
+      <title>Polaris</title>
+      <base target="_top">
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+      <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+      <script>
+        $(document).ready(function(){
+          var burger = $('.burger');
+          var menu = $('#' + burger.data('target'));
+        
+          burger.on('click', function() {
+            burger.toggleClass('is-active');
+            menu.toggleClass('is-active');
+          });
+        });
+      </script>
+      <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item is-size-2 pt-1 pr-6" style="font-family: 'Noto Sans JP', sans-serif; color:#004AAD;" href="<?= url ?>">Polaris-U</a>
+              <div class="navbar-burger burger" data-target="navbarMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+          </div>
+          <div id="navbarMenu" class="navbar-menu">
+            <div class="navbar-start">
+              <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+                <a class="navbar-item m-2" style="font-family: 'Montserrat', sans-serif;color: #778899" onclick="activateTab('schedule')">Schedule</a>
+              <? } ?>
+              <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+                <a class="navbar-item m-2" style="font-family: 'Montserrat', sans-serif;color: #778899" onclick="activateTab('member')">Member</a>
+              <? } ?>
+              <? if(user_permission == "内部" || user_permission == "特殊" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+                <a class="navbar-item m-2" style="font-family: 'Montserrat', sans-serif;color: #778899" onclick="activateTab('item')">Item</a>
+              <? } ?>
+              <? if(user_permission == "内部" || user_permission == "運営" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+                <a class="navbar-item m-2" style="font-family: 'Montserrat', sans-serif;color: #778899" onclick="activateTab('board')">Board</a>
+              <? } ?>
+              <? if(user_permission == "外部"|| user_permission == "内部" || user_permission == "運営" || user_permission == "特殊" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+                <a class="navbar-item m-2" style="font-family: 'Montserrat', sans-serif;color: #778899" onclick="activateTab('public')">Portal</a>
+              <? } ?>
+              <? if(user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+                <a class="navbar-item m-2" style="font-family: 'Montserrat', sans-serif;color: #778899" onclick="activateTab('admin')">Admin</a>
+              <? } ?>
+              <? if(user_permission == "外部"|| user_permission == "内部" || user_permission == "運営" || user_permission == "特殊" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+                <a class="navbar-item m-2" style="font-family: 'Montserrat', sans-serif;color: #778899" onclick="activateTab('about')">About</a>
+              <? } ?>
+            </div>
+            <div class="navbar-end">
+              <div class="navbar-item m-4" style="font-family: 'Montserrat', sans-serif;color: #778899">
+                <p>ようこそ <?= user_name ?>さん (<?= user_permission ?>ユーザー)</br>
+              </div>
+              <div class="navbar-item" style="font-family: 'Montserrat', sans-serif;color: #778899">
+                <p>放送部webシステム</br>
+                <c class="has-text-centered" style="font-size: 12px"> Polaris with you and for you</c></p>
+              </div>
+            </div>
+          </div>
+        </nav>
+      </head>
+      <body>
+        <div class="columns mt-5" style="height: 85vh;">
+          <div class="column is-2 is-hidden-mobile is-hidden-tablet" style="overflow: auto;">
+            <aside class="menu m-4">
+              
+            </aside>
+          </div>
+          <div class="column" style="overflow: auto;">
+<!--  ここまでが固定(ヘッダー)　-->
+
+
+<!--<div class="notification is-danger is-light m-2">システムメンテナンス中...<br>一部機能の使用が制限されています</div>-->
+<!-- <div class="notification is-info is-light m-2" id="index_near_activity">loading</div> -->
+<section>
+  <div class="tab-content m-2" id="schedule-content" style="display: none">
+    <?!= HtmlService.createHtmlOutputFromFile("schedule/list").getContent(); ?>
+  </div>
+  <div id="member-content" class="tab-content m-2" style="display: none">
+    <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+      <?!= HtmlService.createHtmlOutputFromFile("member/search").getContent(); ?>
+    <? }else{ ?>
+      <?!= HtmlService.createHtmlOutputFromFile("error").getContent(); ?>
+    <? } ?>
+  </div>
+  <div class="tab-content m-2" id="item-content" style="display: none">
+    <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+      <?!= HtmlService.createHtmlOutputFromFile("item/search").getContent(); ?>
+    <? }else{ ?>
+      <?!= HtmlService.createHtmlOutputFromFile("error").getContent(); ?>
+    <? } ?>
+  </div>
+  <div class="tab-content m-2" id="board-content" style="display: none">
+    <? if(user_permission == "内部" || user_permission== "運営" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+      <?!= HtmlService.createHtmlOutputFromFile("board/list").getContent(); ?>
+    <? }else{ ?>
+      <?!= HtmlService.createHtmlOutputFromFile("error").getContent(); ?>
+    <? } ?>
+  </div>
+  <div class="tab-content m-2" id="public-content">
+    <? if(user_permission == "外部" || user_permission == "内部" || user_permission== "運営" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+      <?!= HtmlService.createHtmlOutputFromFile("form/formlist").getContent(); ?>
+    <? }else{ ?>
+      <?!= HtmlService.createHtmlOutputFromFile("error").getContent(); ?>
+    <? } ?>
+  </div>
+  <div class="tab-content m-2" id="admin-content" style="display: none">
+    <? if(user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+      <?!= HtmlService.createHtmlOutputFromFile("admin").getContent(); ?>
+    <? }else{ ?>
+      <?!= HtmlService.createHtmlOutputFromFile("error").getContent(); ?>
+    <? } ?>
+  </div>
+  <div class="tab-content m-2" id="about-content" style="display: none">
+    <? if(user_permission == "外部" || user_permission == "内部" || user_permission== "運営" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+      <?!= HtmlService.createHtmlOutputFromFile("about").getContent(); ?>
+    <? }else{ ?>
+      <?!= HtmlService.createHtmlOutputFromFile("error").getContent(); ?>
+    <? } ?>
+  </div>
+</section>
+</section>
+<script>
+  function activateTab(to) {
+    const tabs = document.querySelectorAll(".tabs li");
+    const tabContents = document.getElementsByClassName("tab-content");
+    for (const tab of tabs) {
+      tab.className = "";
+      if (tab.id == to + "-tab") tab.className = "is-active";
+    }
+    for (const content of tabContents) {
+      content.style.display = "none";
+      if (content.id == to + "-content") content.style.display = "block";
+    }
+    gtag("event", "activate_tab", { event_label: to });
+}
+</script>
+<script
+  src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+</script>
+<script>
+  // The code in this function runs when the page is loaded.
+  $(function() {
+    google.script.run.withSuccessHandler(noticeShowThings)
+        .getData("index");
+  });
+
+  function noticeShowThings(things) {
+    notice = document.getElementById('index_near_activity')
+    notice.innerHTML = "<b>次回の活動</b><br>" + String(things[0][1]) + "/" + String(things[0][2]) + "(" + String(things[0][3]) + ") " + String(things[0][4]) + " " + String(things[0][5]) + " @" + String(things[0][6])+ "<br>備考:" + String(things[0][7])
+  }
+</script>
