@@ -75,7 +75,7 @@
         </nav>
     </head>
     <body>
-        <div class="columns mt-5" style="height: 85vh">
+        <div class="columns mt-5">
             <div class="column is-2 is-hidden-mobile is-hidden-tablet" style="overflow: auto">
                 <aside class="menu m-4"></aside>
             </div>
@@ -86,35 +86,35 @@
                 <!-- <div class="notification is-info is-light m-2" id="index_near_activity">loading</div> -->
                 <section>
                     <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
-                    <div class="tab-content m-2" id="schedule-content">
+                    <div class="tab-content mx-2" id="schedule-content">
                         <?!= HtmlService.createHtmlOutputFromFile("schedule/list").getContent(); ?>
                     </div>
                     <? } ?>
                     <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
-                    <div id="member-content" class="tab-content m-2" style="display: none">
+                    <div id="member-content" class="tab-content mx-2" style="display: none">
                         <?!= HtmlService.createHtmlOutputFromFile("member/search").getContent(); ?>
                     </div>
                     <? } ?>
                     <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
-                    <div class="tab-content m-2" id="item-content" style="display: none">
+                    <div class="tab-content mx-2" id="item-content" style="display: none">
                         <?!= HtmlService.createHtmlOutputFromFile("item/search").getContent(); ?>
                     </div>
                     <? } ?>
                     <? if(user_permission == "内部" || user_permission== "運営" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
-                    <div class="tab-content m-2" id="board-content" style="display: none">
+                    <div class="tab-content mx-2" id="board-content" style="display: none">
                         <?!= HtmlService.createHtmlOutputFromFile("board/list").getContent(); ?>
                     </div>
                     <? } ?>
                     <? if( user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
-                    <div class="tab-content m-2" id="public-content">
+                    <div class="tab-content mx-2" id="public-content" style="display: none">
                         <?!= HtmlService.createHtmlOutputFromFile("form/formlist").getContent(); ?>
                     </div>
                     <? }else{ ?>
-                    <div class="tab-content m-2" id="public-content" style="display: none">
+                    <div class="tab-content mx-2" id="public-content">
                         <?!= HtmlService.createHtmlOutputFromFile("form/formlist").getContent(); ?>
                     </div>
                     <? } ?>
-                    <div class="tab-content m-2" id="admin-content" style="display: none">
+                    <div class="tab-content mx-2" id="admin-content" style="display: none">
                         <? if(user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
                         <?!= HtmlService.createHtmlOutputFromFile("admin").getContent(); ?>
                         <? }else{ ?>

@@ -1,23 +1,17 @@
 <section class="m-3">
-    <div class="columns">
-        <div class="column"></div>
-        <div class="column is-3">
-            <a class="button is-info is-outline is-light js-modal-trigger" data-target="new">
-                <div class="columns m-2">
-                    <div class="column">
-                        <span class="icon">
-                            <i class="fas fa-regular fa-calendar-plus fa-1x"></i>
-                        </span>
-                    </div>
-                    <div class="column">新規作成</div>
-                </div>
-            </a>
-        </div>
+    <div style="position: fixed; bottom: 0; right: 0; margin: 15px">
+        <a class="button is-info is-outline is-light js-modal-trigger" data-target="new">
+            <span class="icon">
+                <i class="fas fa-regular fa-calendar-plus fa-2x"></i>
+            </span>
+        </a>
     </div>
-    <div id="scheduledata" style="height: 60vh; width: 60vh; display: block; margin: auto; margin-top: 30vh; margin-left: 20vh">
+    <div id="scheduledata" style="display: block; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%)">
+        <div class="is-4"></div>
         <span class="icon">
             <i class="fas fa-spinner fa-spin fa-lg fa-10x"></i>
         </span>
+        <div class="is-4"></div>
     </div>
     <div class="modal" id="detail">
         <div class="modal-background"></div>
