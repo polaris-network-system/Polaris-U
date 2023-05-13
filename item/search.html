@@ -1,0 +1,105 @@
+<section class="mx-3">
+  <div class="columns">
+    <div class="column">
+    </div>
+    <div class="column is-1">
+      <a class="button is-success is-outline is-light js-modal-trigger m-1" data-target="item_edit">
+        <span class="icon">
+          <i class="fas fa-edit fa-1x"></i>
+        </span>
+      </a>
+      <a class="button is-info is-outline is-light js-modal-trigger m-1" data-target="item_new">
+        <span class="icon">
+          <i class="fas fa-plus fa-1x"></i>
+        </span>
+      </a>
+    </div>
+  </div>
+  <div class="my-3">
+      <!-- フォームの部品 -->
+      <div class="columns">
+        <div class="column">
+          <input type="text" id="item_search_word" name="item_search_word" class="input mx-4" placeholder="機材ID,登録名などで検索">
+        </div>
+        <div class="column is-one-fifth">
+          <input type="submit" value="検索" class="button is-outline is-info mx-4" id="item_search_btn">
+        </div>
+      </div>
+  </div>
+  <p class="sub-title" id="item_result_text"></p>
+  <div id="itemdata">
+    <div class="hero">
+      <div class="hero-body my-6">
+        <p class="title">loading...</p>
+      </div>
+    </div>
+  </div>
+  <div>
+    <table width="100%"　border=1 class="table" id="item_sort_table">
+      <tr id="item_header">
+      </tr>
+    </table>
+  </div>
+</section>
+<script
+  src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+</script>
+<script>
+  var item_search_btn = document.getElementById('item_search_btn');
+  item_search_btn.addEventListener('click', function() {
+    item_search_btn.value = "検索中..."
+    var item_data_area = document.getElementById('itemdata')
+    var data_table = document.getElementById('item_sort_table')
+    content = '<div id="itemdata"><div class="hero"><div class="hero-body my-6"><p class="title">Searching...</p></div></div></div>'
+    item_data_area.insertAdjacentHTML("afterbegin",content)
+    
+    data_table.textContent = ""
+    content = '<tr id="item_header"></tr>'
+    data_table.insertAdjacentHTML("afterbegin",content)
+    $(function() {
+    google.script.run.withSuccessHandler(itemShowThings)
+        .getData("item_list_search",document.getElementById('item_search_word').value);
+    });
+  })
+</script>
+<script>
+  // The code in this function runs when the page is loaded.
+  $(function() {
+    google.script.run.withSuccessHandler(itemShowThings)
+        .getData("item_list_default");
+  });
+
+  function itemShowThings(things) {
+    if(things.length == 1){
+      var item_data_area = document.getElementById('itemdata')
+      item_data_area.textContent = ""
+      content = '<div id="itemdata"><div class="hero"><div class="hero-body my-6"><p class="title">該当なし</p></div></div></div>'
+      item_data_area.insertAdjacentHTML("afterbegin",content)
+    }else{
+      var data_item_header = document.getElementById('item_header')
+      var data_body = document.getElementById('item_sort_table')
+      var item_data_area = document.getElementById('itemdata')
+      item_data_area.textContent = ""
+
+      element_tmp = ""
+      for (var i = 0; i < things[0].length; i++){
+        element_tmp += '<th>' + things[0][i] + '</th>'
+      }
+      data_item_header.insertAdjacentHTML('beforebegin',element_tmp)
+
+      for (var i = 1; i < things.length; i++) {
+        var trele = document.createElement("tr")
+        for (var j=0; j < things[i].length; j++) {
+          var tdele = document.createElement("td")
+          var text = document.createTextNode(String(things[i][j]))
+          tdele.appendChild(text)
+          trele.appendChild(tdele)
+        }
+        data_body.appendChild(trele)
+      }
+      content = "一致件数：" + (things.length -1) + "件"
+      document.getElementById('item_result_text').textContent = content
+    }
+    item_search_btn.value = "検索"
+  }
+</script>

@@ -1,0 +1,88 @@
+<section class="m-3">
+  <div class="my-3">
+      <!-- フォームの部品 -->
+      <div class="columns">
+        <div class="column">
+          <input type="text" id="member_search_word" name="member_search_word" class="input mx-4" placeholder="固有学籍番号、氏名などで検索">
+        </div>
+        <div class="column is-one-fifth">
+          <input type="submit" value="検索" class="button is-outline is-info mx-4" id="member_search_btn">
+        </div>
+      </div>
+  </div>
+  <p class="sub-title" id="member_result_text"></p>
+  <div id="memberdata">
+    <div class="hero">
+      <div class="hero-body my-6">
+        <p class="title">loading...</p>
+      </div>
+    </div>
+  </div>
+  <div>
+    <table width="100%"　border=1 class="table" id="member_sort_table">
+      <tr id="member_header">
+      </tr>
+    </table>
+  </div>
+</section>
+<script
+  src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+</script>
+<script>
+  var member_search_btn = document.getElementById('member_search_btn');
+  member_search_btn.addEventListener('click', function() {
+    member_search_btn.value = "検索中..."
+    var member_data_area = document.getElementById('memberdata')
+    var data_table = document.getElementById('member_sort_table')
+    content = '<div id="memberdata"><div class="hero"><div class="hero-body my-6"><p class="title">Searching...</p></div></div></div>'
+    member_data_area.insertAdjacentHTML("afterbegin",content)
+    
+    data_table.textContent = ""
+    content = '<tr id="member_header"></tr>'
+    data_table.insertAdjacentHTML("afterbegin",content)
+    $(function() {
+    google.script.run.withSuccessHandler(memberShowThings)
+        .getData("member_list_search",document.getElementById('member_search_word').value);
+    });
+  })
+</script>
+<script>
+  // The code in this function runs when the page is loaded.
+  $(function() {
+    google.script.run.withSuccessHandler(memberShowThings)
+        .getData("member_list_search","部員");
+  });
+
+  function memberShowThings(things) {
+    if(things.length == 1){
+      var member_data_area = document.getElementById('memberdata')
+      member_data_area.textContent = ""
+      content = '<div id="memberdata"><div class="hero"><div class="hero-body my-6"><p class="title">該当なし</p></div></div></div>'
+      member_data_area.insertAdjacentHTML("afterbegin",content)
+    }else{
+      var data_member_header = document.getElementById('member_header')
+      var data_body = document.getElementById('member_sort_table')
+      var member_data_area = document.getElementById('memberdata')
+      member_data_area.textContent = ""
+      element_tmp = ""
+      for (var i = 0; i < things[0].length; i++){
+        element_tmp += '<th>' + things[0][i] + '</th>'
+      }
+      data_member_header.insertAdjacentHTML('beforebegin',element_tmp)
+
+      for (var i = 1; i < things.length; i++) {
+        var trele = document.createElement("tr")
+        for (var j=0; j < things[i].length; j++) {
+          var tdele = document.createElement("td")
+          var text = document.createTextNode(String(things[i][j]))
+          tdele.appendChild(text)
+          trele.appendChild(tdele)
+        }
+        data_body.appendChild(trele)
+      }
+      content = "一致件数：" + (things.length -1) + "件"
+      document.getElementById('member_result_text').textContent = content
+    }
+    member_search_btn.value = "検索"
+  }
+</script>

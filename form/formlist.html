@@ -1,0 +1,48 @@
+<section class="m-3">
+  <div class="hero">
+    <div class="hero-body">
+      <p class="title">現在回答を受け付けているフォーム</p>
+    </div>
+  </div>
+  <div id="data">
+    <div class="hero">
+      <div class="hero-body">
+        <p class="title">loading...</p>
+      </div>
+    </div>
+  </div>
+</section>
+<script
+  src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+</script>
+<script>
+  // The code in this function runs when the page is loaded.
+  $(function() {
+    google.script.run.withSuccessHandler(showThings)
+        .getData("form_public");
+  });
+
+  function showThings(things) {
+    var data_area = document.getElementById('data')
+    data_area.textContent = ""
+    for (var i = 0; i < things.length; i++) {
+      element_tmp = ''
+      element_tmp += '<div class="m-4 card card-content content columns">'
+      element_tmp += '<div class="column is-one-quarter">'
+      element_tmp += '<c class="is-size-3"><b>' + things[i][0] + '月' + things[i][1] + '日</b></c></br>'
+      element_tmp += '<c class="is-size-4">' + String(things[i][2]) + ' <c class="is-size-6">締め切り</c></c>'
+      element_tmp += '</div>'
+      element_tmp += '<div class="column">'
+      element_tmp += '<div class="columns">'
+      element_tmp += '<div class="column is-size-4"><b>' + things[i][3] + '</b></div>'
+      element_tmp += '<div class="column is-one-quarter is-size-4"><a class="button is-link is-light is-rounded " href="' + things[i][6] + '">リンク</a></div>'
+      element_tmp += '</div>'
+      element_tmp += '<div class="columns">'
+      element_tmp += '<div class="column is-one-third is-size-6">対象：<br>' + things[i][4] + '</div>'
+      element_tmp += '<div class="column is-size-6">備考：<br>' + things[i][5] + '</div>'
+      element_tmp += '</div>'
+      element_tmp += '</div>'
+      data_area.insertAdjacentHTML('beforebegin',element_tmp);
+    }
+  }
+</script>

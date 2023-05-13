@@ -1,0 +1,291 @@
+<section class="m-3">
+  <div class="columns">
+    <div class="column">
+    </div>
+    <div class="column is-one-quarter">
+      <a class="button is-info is-outline is-light js-modal-trigger" data-target="new">
+        <div class="columns m-2">
+          <div class="column">
+            <span class="icon">
+              <i class="fas fa-regular fa-calendar-plus fa-1x"></i>
+            </span>
+          </div>
+          <div class="column">
+            新規作成
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div id="scheduledata" style="height: 60vh; width: 60vh; display: block; margin: auto; margin-top: 30vh; margin-left: 20vh;">
+    <span class="icon">
+      <i class="fas fa-spinner fa-spin fa-lg fa-10x"></i>
+    </span>
+  </div>
+  <div class="modal" id="detail">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <section class="modal-card-body">
+        <div class="content">
+          <section>
+            <div class="message is-danger">
+              <div class="message-body">
+                <b>欠席連絡</b><br><br>
+                <div id="absence_display">loading</div>
+              </div>
+            </div>
+
+            <strong>部活予定の編集</strong>
+            <input type="hidden" id="sid">
+            <div class="my-4">
+              <label for="date">活動日</label>
+              <input type="datetime-local" id="d_date" name="date" class="input">
+            </div>
+            <div class="my-4">
+              <label for="d_title">活動内容</label>
+              <input type="text" id="d_title" name="d_title" class="input" placeholder="活動内容を簡潔に入力">
+            </div>
+            <div class="my-4">
+              <label for="d_place">活動場所</label>
+              <input type="text" id="d_place" name="d_place" class="input"placeholder="活動場所を入力">
+            </div>
+            <div class="my-4">
+              <label for="d_message">特記事項</label>
+              <input type="text" id="d_message" name="d_message" class="input"placeholder="特記事項を入力">
+            </div>
+          </section>
+        </div>
+      </section>
+      <footer class="modal-card-foot">
+        <a class="button is-info is-fullwidth is-outlined" id="d_save">保存</a>
+        <a class="button is-danger is-fullwidth is-outlined" id="d_delete">削除</a>
+      </footer>
+    </div>
+  </div>
+  <div class="modal" id="new">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <section class="modal-card-body">
+        <div class="content">
+          <section>
+            <strong>部活予定の新規作成</strong>
+            <div class="my-4">
+              <label for="date">活動日</label>
+              <input type="datetime-local" id="date" name="date" class="input">
+            </div>
+            <div class="my-4">
+              <label for="title">活動内容</label>
+              <input type="text" id="title" name="title" class="input" placeholder="活動内容を簡潔に入力">
+            </div>
+            <div class="my-4">
+              <label for="place">活動場所</label>
+              <input type="text" id="place" name="place" class="input"placeholder="活動場所を入力">
+            </div>
+            <div class="my-4">
+              <label for="message">特記事項</label>
+              <input type="text" id="message" name="message" class="input"placeholder="特記事項を入力">
+            </div>
+          </section>
+        </div>
+      </section>
+      <footer class="modal-card-foot">
+        <a class="button is-info is-fullwidth is-outlined" id="btn_new">登録する</a>
+      </footer>
+    </div>
+  </div>
+  <div class="modal" id="absence">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <section class="modal-card-body">
+        <div class="content">
+          <section>
+            <strong>欠席申請</strong>
+            <input type="hidden" id="aid">
+            <div class="my-4">
+              <label for="type">種別</label>
+              <input type="text" id="a_type" name="type" class="input" placeholder="欠席、早退、遅刻など">
+            </div>
+            <div class="my-4">
+              <label for="message">特記事項</label>
+              <input type="text" id="a_message" name="message" class="input"placeholder="特記事項を入力">
+            </div>
+          </section>
+        </div>
+      </section>
+      <footer class="modal-card-foot">
+        <a class="button is-info is-fullwidth is-outlined" id="btn_a_submit">申請する</a>
+      </footer>
+    </div>
+  </div>
+</section>
+<script
+  src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+</script>
+<script>
+  function getdetails(id){
+    document.getElementById("absence_display").innerHTML = "Loading..."
+    document.getElementById("d_date").value = ""
+    document.getElementById("d_title").value = "Loading..."
+    document.getElementById("d_place").value = "Loading..."
+    document.getElementById("d_message").value = "Loading..."
+    document.getElementById("d_save").setAttribute("disabled","")
+    document.getElementById("d_delete").setAttribute("disabled","")
+    google.script.run.withSuccessHandler(showThingsDetail)
+      .getData("schedule_detail",id);
+  }
+  function showThingsDetail(things){
+    absence_text = ""
+    for(var i=0;i<things[0].length;i++){
+      absence_text += things[0][i][1] + " " + things[0][i][2] + "<br>" + things[0][i][5] + "<br><br>"
+    }
+    document.getElementById("absence_display").innerHTML = absence_text
+    document.getElementById("d_date").value = String(things[1][0][9]).split(" ")[0] + "T" + String(things[1][0][9]).split(" ")[1]
+    document.getElementById("d_title").value = things[1][0][5]
+    document.getElementById("d_place").value = things[1][0][6]
+    document.getElementById("d_message").value = things[1][0][7]
+    document.getElementById("sid").value = things[3]
+    if(things[2] == "allow"){
+      document.getElementById("d_date").removeAttribute("disabled")
+      document.getElementById("d_title").removeAttribute("disabled")
+      document.getElementById("d_place").removeAttribute("disabled")
+      document.getElementById("d_message").removeAttribute("disabled")
+      document.getElementById("d_save").removeAttribute("disabled")
+      document.getElementById("d_delete").removeAttribute("disabled")
+    }else{
+      document.getElementById("d_save").setAttribute("disabled","")
+      document.getElementById("d_delete").setAttribute("disabled","")
+      document.getElementById("d_date").setAttribute("disabled","")
+      document.getElementById("d_title").setAttribute("disabled","")
+      document.getElementById("d_place").setAttribute("disabled","")
+      document.getElementById("d_message").setAttribute("disabled","")
+    }
+  }
+  function openModal($el) {
+    $el.classList.add('is-active');
+  }
+  function closeModal($el) {
+    $el.classList.remove('is-active');
+  }
+  function createTrigger(){
+    (document.querySelectorAll('.js-modal-trigger') || []).forEach(($trigger) => {
+      const target = $trigger.dataset.target;
+      const id = $trigger.dataset.id;
+      const $target = document.getElementById(target);
+      $trigger.addEventListener('click', () => {
+        if(target == "detail"){
+          getdetails(id)
+        }else if( target == "absence"){
+          document.getElementById("aid").value = id
+        }
+        openModal($target);
+      });
+    });
+    (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(   ($close) => {
+      const $target = $close.closest('.modal');
+      $close.addEventListener('click', () => {
+        closeModal($target);
+      });
+    });
+  }
+</script>
+<script>
+  // The code in this function runs when the page is loaded.
+  function default_schedule_list(){
+    google.script.run.withSuccessHandler(showThingsList)
+        .getData("schedule_list");
+  }
+  default_schedule_list()
+
+  function showThingsList(things) {
+    var data_area = document.getElementById('scheduledata')
+    data_area.textContent = ""
+    for (var i = 0; i < things[1].length; i++) {
+      element_tmp = ""
+      element_tmp += '<div class="m-4 card card-content content columns">'
+      element_tmp += '<div class="column is-one-quarter">'
+      element_tmp += '<c class="is-size-3"><b>' + things[1][i][1] + '月' + things[1][i][2] + '日</b></c></br>'
+      element_tmp += '<c class="is-size-4"><c class="is-size-5">' + String(things[1][i][3]) + '</c>  ' + String(things[1][i][4]) + '</c>'
+      element_tmp += '</div>'
+      element_tmp += '<div class="column">'
+      element_tmp += '<div class="columns">'
+      element_tmp += '<div class="column is-size-4"><b>' + things[1][i][5] + '</b></div>'
+      element_tmp += '<div class="column is-one-third is-size-5">@' + things[1][i][6] + '</div>'
+      element_tmp += '</div>'
+      element_tmp += '<div class="columns">'
+      element_tmp += '<div class="column is-size-6">' + things[1][i][7] + '</div>'
+      element_tmp += '<div class="column is-one-third is-size-6">作成者：' + things[1][i][8] + '<br><br>'
+      element_tmp += '<div class="columns"><div class="column"><a class="button is-info is-rounded is-light js-modal-trigger" data-target="detail" data-id="' +　String(i+1) + '">詳細</a></div>'
+      element_tmp += '<div class="column"><a class="button is-danger is-rounded is-light js-modal-trigger" data-target="absence" data-id="' +　String(i+1) + '">欠席</a></div></div>'
+      element_tmp += '</div>'
+      element_tmp += '</div>'
+      data_area.insertAdjacentHTML('beforebegin',element_tmp);
+    }
+    createTrigger()
+  }
+</script>
+<script>
+  var btn = document.getElementById('btn_new');
+  btn.addEventListener('click', function() {
+    btn.value = "送信中..."
+    $(function() {
+    google.script.run.withSuccessHandler(showThingsNew)
+        .sendData("schedule_new",document.getElementById('date').value,document.getElementById('title').value,document.getElementById('place').value,document.getElementById('message').value);
+    });
+  })
+  function showThingsNew(things) {
+    message = "成功しました\n名前：" + things[0] + "\n日時：" + things[1] + "\nページを再読み込みしてください"
+    window.alert(message)
+    document.getElementById('date').value = ""
+    document.getElementById('title').value = ""
+    document.getElementById('place').value = ""
+    document.getElementById('message').value = ""
+    btn.value = "登録する"
+  }
+</script>
+<script>
+  var btn_d_save = document.getElementById('d_save');
+  btn_d_save.addEventListener('click', function() {
+    btn_d_save.value = "保存中..."
+    $(function() {
+    google.script.run.withSuccessHandler(showThingsSave)
+        .sendData("schedule_update",document.getElementById('sid').value,document.getElementById('d_date').value,document.getElementById('d_title').value,document.getElementById('d_place').value,document.getElementById('d_message').value);
+    });
+  })
+  function showThingsSave(things) {
+    btn_d_save.value = "保存"
+    message = "成功しました\nページを再読み込みしてください"
+    window.alert()
+  }
+</script>
+<script>
+  var btn_d_delete = document.getElementById('d_delete');
+  btn_d_delete.addEventListener('click', function() {
+    btn_d_delete.value = "削除中..."
+    $(function() {
+    google.script.run.withSuccessHandler(showThingsDelete)
+        .sendData("schedule_delete",document.getElementById('sid').value);
+    });
+  })
+  function showThingsDelete(things) {
+    btn_d_delete = "削除"
+    message = "成功しました\nページを再読み込みしてください"
+    window.alert()
+  }
+</script>
+<script>
+  var btn = document.getElementById('btn_a_submit');
+  btn_a_submit.addEventListener('click', function() {
+    btn_a_submit.value = "送信中..."
+    $(function() {
+    google.script.run.withSuccessHandler(showThingsAbsence)
+        .sendData("absence_new_slist",document.getElementById('aid').value,document.getElementById('a_type').value,document.getElementById('a_message').value);
+    });
+  })
+  function showThingsAbsence(things) {
+    btn_a_submit.value = "申請"
+    document.getElementById('aid').value = ""
+    document.getElementById('a_type').value = ""
+    document.getElementById('a_message').value = ""
+    window.alert("申請しました")
+  }
+</script>
