@@ -85,37 +85,35 @@
                 <!--<div class="notification is-danger is-light m-2">システムメンテナンス中...<br>一部機能の使用が制限されています</div>-->
                 <!-- <div class="notification is-info is-light m-2" id="index_near_activity">loading</div> -->
                 <section>
-                    <div class="tab-content m-2" id="schedule-content" style="display: none">
+                    <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+                    <div class="tab-content m-2" id="schedule-content">
                         <?!= HtmlService.createHtmlOutputFromFile("schedule/list").getContent(); ?>
                     </div>
+                    <? } ?>
+                    <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
                     <div id="member-content" class="tab-content m-2" style="display: none">
-                        <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
                         <?!= HtmlService.createHtmlOutputFromFile("member/search").getContent(); ?>
-                        <? }else{ ?>
-                        <?!= HtmlService.createHtmlOutputFromFile("error").getContent(); ?>
-                        <? } ?>
                     </div>
+                    <? } ?>
+                    <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
                     <div class="tab-content m-2" id="item-content" style="display: none">
-                        <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
                         <?!= HtmlService.createHtmlOutputFromFile("item/search").getContent(); ?>
-                        <? }else{ ?>
-                        <?!= HtmlService.createHtmlOutputFromFile("error").getContent(); ?>
-                        <? } ?>
                     </div>
+                    <? } ?>
+                    <? if(user_permission == "内部" || user_permission== "運営" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
                     <div class="tab-content m-2" id="board-content" style="display: none">
-                        <? if(user_permission == "内部" || user_permission== "運営" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
                         <?!= HtmlService.createHtmlOutputFromFile("board/list").getContent(); ?>
-                        <? }else{ ?>
-                        <?!= HtmlService.createHtmlOutputFromFile("error").getContent(); ?>
-                        <? } ?>
                     </div>
+                    <? } ?>
+                    <? if( user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
                     <div class="tab-content m-2" id="public-content">
-                        <? if(user_permission == "外部" || user_permission == "内部" || user_permission== "運営" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
                         <?!= HtmlService.createHtmlOutputFromFile("form/formlist").getContent(); ?>
-                        <? }else{ ?>
-                        <?!= HtmlService.createHtmlOutputFromFile("error").getContent(); ?>
-                        <? } ?>
                     </div>
+                    <? }else{ ?>
+                    <div class="tab-content m-2" id="public-content" style="display: none">
+                        <?!= HtmlService.createHtmlOutputFromFile("form/formlist").getContent(); ?>
+                    </div>
+                    <? } ?>
                     <div class="tab-content m-2" id="admin-content" style="display: none">
                         <? if(user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
                         <?!= HtmlService.createHtmlOutputFromFile("admin").getContent(); ?>
@@ -143,15 +141,15 @@
                             content.style.display = 'none';
                             if (content.id == to + '-content') content.style.display = 'block';
                         }
-                        gtag('event', 'activate_tab', { event_label: to });
+                        //gtag('event', 'activate_tab', { event_label: to });
                     }
                 </script>
                 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
                 <script>
                     // The code in this function runs when the page is loaded.
-                    $(function () {
-                        google.script.run.withSuccessHandler(noticeShowThings).getData('index');
-                    });
+                    //$(function () {
+                    //    google.script.run.withSuccessHandler(noticeShowThings).getData('index');
+                    //});
 
                     function noticeShowThings(things) {
                         notice = document.getElementById('index_near_activity');
