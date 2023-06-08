@@ -25,7 +25,8 @@
                                 <div id="absence_display">loading</div>
                             </div>
                         </div>
-
+                        <button id="d_att" class="button is-link is-rounded is-light js-modal-trigger" data-target="attmodal" disabled>出席確認</button>
+                        <br><br>
                         <strong>部活予定の編集</strong>
                         <input type="hidden" id="sid" />
                         <div class="my-4">
@@ -50,6 +51,24 @@
             <footer class="modal-card-foot">
                 <a class="button is-info is-fullwidth is-outlined" id="d_save">保存</a>
                 <a class="button is-danger is-fullwidth is-outlined" id="d_delete">削除</a>
+            </footer>
+        </div>
+    </div>
+    <div class="modal" id="attmodal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <section class="modal-card-body">
+                <div class="content">
+                    <section>
+                        <input type="hidden" id="attid" />
+                        <input type="hidden" id="attflag" value="unload" />
+                        <strong>欠席者にチェックをつけてください</strong>
+                        <div id="att_div"></div>
+                    </section>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <a class="button is-info is-fullwidth is-outlined" id="btn_att">欠席として登録する</a>
             </footer>
         </div>
     </div>
@@ -119,6 +138,7 @@
         document.getElementById('d_message').value = 'Loading...';
         document.getElementById('d_save').setAttribute('disabled', '');
         document.getElementById('d_delete').setAttribute('disabled', '');
+        document.getElementById('attid').value = id;
         google.script.run.withSuccessHandler(showThingsDetail).getData('schedule_detail', id);
     }
     function showThingsDetail(things) {
@@ -139,6 +159,7 @@
             document.getElementById('d_message').removeAttribute('disabled');
             document.getElementById('d_save').removeAttribute('disabled');
             document.getElementById('d_delete').removeAttribute('disabled');
+            document.getElementById('d_att').removeAttribute('disabled');
         } else {
             document.getElementById('d_save').setAttribute('disabled', '');
             document.getElementById('d_delete').setAttribute('disabled', '');
@@ -146,6 +167,42 @@
             document.getElementById('d_title').setAttribute('disabled', '');
             document.getElementById('d_place').setAttribute('disabled', '');
             document.getElementById('d_message').setAttribute('disabled', '');
+            document.getElementById('d_att').setAttribute('disabled', '');
+        }
+    }
+    function getusers(){
+      if (document.getElementById('attflag').value == "unload"){
+        document.getElementById('att_div').textContent = "Loading..."
+        document.getElementById('attflag').value = "loaded"
+        google.script.run.withSuccessHandler(showThingsUsers).getData('users');
+      }
+    }
+    function showThingsUsers(things){
+      var data_area = document.getElementById('att_div');
+        data_area.textContent = '';
+        for (var i = 1; i < things.length; i++) {
+            element_tmp = '<div class="mx-3 my-2"><input type="checkbox" class="usercheckbox" id="'
+            element_tmp += String(things[i][0])
+            element_tmp += '" ><label class="mx-1">'
+            element_tmp += String(things[i][1]) + String(things[i][3]) + '</label></div>';
+            data_area.insertAdjacentHTML('beforebegin', element_tmp);
+        }
+        var btn_att_submit = document.getElementById('btn_att');
+        btn_att_submit.addEventListener('click', function () {
+          window.alert("欠席登録を実行します")
+          const AttElem = document.getElementsByClassName("usercheckbox");
+          for (var i=0;i<AttElem.length;i++){
+            if (AttElem[i].checked == true){
+              $(function () {
+                google.script.run
+                  .withSuccessHandler(showThingsAbsence_ogz)
+                  // TODO 学籍番号を引数に含める
+                  .sendData('absence_new_slist', document.getElementById('attid').value, "欠席","主催者により欠席登録されました",AttElem[i].id);
+              });
+            }
+          }
+        });
+        function showThingsAbsence_ogz(things) {
         }
     }
     function openModal($el) {
@@ -163,7 +220,9 @@
                 if (target == 'detail') {
                     getdetails(id);
                 } else if (target == 'absence') {
-                    document.getElementById('aid').value = id;
+                  document.getElementById('aid').value = id;
+                } else if(target == 'attmodal'){
+                  getusers();
                 }
                 openModal($target);
             });
@@ -182,6 +241,13 @@
         google.script.run.withSuccessHandler(showThingsList).getData('schedule_list');
     }
     default_schedule_list();
+    function twoInt(number) {
+        if (number.length < 2) {
+            return '0' + number;
+        } else {
+            return number;
+        }
+    }
 
     function showThingsList(things) {
         var data_area = document.getElementById('scheduledata');
@@ -190,7 +256,7 @@
             element_tmp = '';
             element_tmp += '<div class="m-4 card card-content content columns">';
             element_tmp += '<div class="column is-one-quarter">';
-            element_tmp += '<c class="is-size-3"><b>' + things[1][i][1] + '月' + things[1][i][2] + '日</b></c></br>';
+            element_tmp += '<c class="is-size-3"><b>' + twoInt(things[1][i][1]) + '月' + twoInt(things[1][i][2]) + '日</b></c></br>';
             element_tmp += '<c class="is-size-4"><c class="is-size-5">' + String(things[1][i][3]) + '</c>  ' + String(things[1][i][4]) + '</c>';
             element_tmp += '</div>';
             element_tmp += '<div class="column">';
@@ -212,9 +278,8 @@
     }
 </script>
 <script>
-    var btn = document.getElementById('btn_new');
-    btn.addEventListener('click', function () {
-        btn.value = '送信中...';
+    document.getElementById('btn_new').addEventListener('click', function () {
+        btn_new.value = '送信中...';
         $(function () {
             google.script.run
                 .withSuccessHandler(showThingsNew)
@@ -275,7 +340,7 @@
     }
 </script>
 <script>
-    var btn = document.getElementById('btn_a_submit');
+    var btn_a_submit = document.getElementById('btn_a_submit');
     btn_a_submit.addEventListener('click', function () {
         btn_a_submit.value = '送信中...';
         $(function () {

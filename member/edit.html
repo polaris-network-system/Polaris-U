@@ -18,8 +18,12 @@
       </div>
       
       <div class="my-4">
-            <label for="status">権限</label>
+            <label for="status">種別</label>
             <input type="text" id="status" name="status" class="input">
+      </div>
+      <div class="my-4">
+            <label for="permission">権限</label>
+            <input type="text" id="permission" name="status" class="input">
       </div>
       <div class="my-4">
             <label for="class">学籍番号</label>
@@ -54,6 +58,7 @@
       document.getElementById('result').textContent = "入力された固有学籍番号は登録されていません"
       document.getElementById('name').value = ""
       document.getElementById('status').value = ""
+      document.getElementById('permission').value = ""
       document.getElementById('class').value = ""
       document.getElementById('team').value = ""
       document.getElementById('email').value = ""
@@ -65,6 +70,7 @@
       document.getElementById('result').textContent = ""
       document.getElementById('name').value = things[1][3]
       document.getElementById('status').value = things[1][5]
+      document.getElementById('permission').value = things[1][6]
       document.getElementById('class').value = things[1][1]
       document.getElementById('team').value = things[1][2]
       document.getElementById('email').value = things[1][4]
@@ -80,13 +86,23 @@
     document.getElementById('btn_update').value = "送信中..."
     $(function() {
     google.script.run.withSuccessHandler(showThings_update)
-        .sendData("member_update",document.getElementById('id').value,document.getElementById('class').value,document.getElementById('team').value,document.getElementById('name').value,document.getElementById('email').value,document.getElementById('status').value);
+        .sendData("member_update",document.getElementById('id').value,document.getElementById('class').value,document.getElementById('team').value,document.getElementById('name').value,document.getElementById('email').value,document.getElementById('status').value,document.getElementById('permission').value);
     });
   })
   function showThings_update(things) {
     message = "成功しました\n固有学籍番号：" + things[0] + "\n名前：" + things[1]
     window.alert(message)
     document.getElementById('btn_update').value = "登録情報更新"
+    document.getElementById('id').value = ""
+    document.getElementById('id').disabled = false
+    document.getElementById('name').value = ""
+    document.getElementById('status').value = ""
+    document.getElementById('permission').value = ""
+    document.getElementById('class').value = ""
+    document.getElementById('team').value = ""
+    document.getElementById('email').value = ""
+    document.getElementById('btn_update').disabled = true;
+    document.getElementById('btn_delete').disabled = true;
   }
 </script>
 <script>
@@ -102,5 +118,15 @@
     message = "削除しました"
     window.alert(message)
     document.getElementById('btn_delete').value = "削除"
+    document.getElementById('id').value = ""
+    document.getElementById('id').disabled = false
+    document.getElementById('name').value = ""
+    document.getElementById('status').value = ""
+    document.getElementById('permission').value = ""
+    document.getElementById('class').value = ""
+    document.getElementById('team').value = ""
+    document.getElementById('email').value = ""
+    document.getElementById('btn_update').disabled = true;
+    document.getElementById('btn_delete').disabled = true;
   }
 </script>

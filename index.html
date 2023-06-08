@@ -30,37 +30,32 @@
                     <span></span>
                     <span></span>
                 </div>
+                <input id="baseurl" value="<?= url ?>" hidden> 
             </div>
             <div id="navbarMenu" class="navbar-menu">
                 <div class="navbar-start">
-                    <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
-                    <a class="navbar-item m-2" style="font-family: 'Montserrat', sans-serif; color: #778899" onclick="activateTab('schedule')">Schedule</a>
+                    <? if(user_permission == "Inside" || user_permission == "Privilege" || user_permission == "Admin" || user_permission == "Advisor"){ ?>
+                    <a class="navbar-item m-1" style="font-family: 'Montserrat', sans-serif; color: #778899" onclick="activateTab('schedule')">Schedule</a>
                     <? } ?>
-                    <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
-                    <a class="navbar-item m-2" style="font-family: 'Montserrat', sans-serif; color: #778899" onclick="activateTab('member')">Member</a>
+                    <? if(user_permission == "Inside" || user_permission == "Privilege" || user_permission == "Admin" || user_permission == "Advisor"){ ?>
+                    <a class="navbar-item m-1" style="font-family: 'Montserrat', sans-serif; color: #778899" onclick="activateTab('member')">Member</a>
                     <? } ?>
-                    <? if(user_permission == "内部" || user_permission == "特殊" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
-                    <a class="navbar-item m-2" style="font-family: 'Montserrat', sans-serif; color: #778899" onclick="activateTab('item')">Item</a>
+                    <? if(user_permission == "Inside" || user_permission == "Privilege" || user_permission == "Admin" || user_permission == "Advisor"){ ?>
+                    <a class="navbar-item m-1" style="font-family: 'Montserrat', sans-serif; color: #778899" onclick="activateTab('item')">Item</a>
                     <? } ?>
-                    <? if(user_permission == "内部" || user_permission == "運営" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
-                    <a class="navbar-item m-2" style="font-family: 'Montserrat', sans-serif; color: #778899" onclick="activateTab('board')">Board</a>
+                    <? if(user_permission == "Outside" || user_permission == "Inside" || user_permission == "Privilege" || user_permission == "Admin" || user_permission == "Advisor"){ ?>
+                    <a class="navbar-item m-1" style="font-family: 'Montserrat', sans-serif; color: #778899" onclick="activateTab('public')">Portal</a>
                     <? } ?>
-                    <? if(user_permission == "外部"|| user_permission == "内部" || user_permission == "運営" || user_permission == "特殊" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
-                    <a class="navbar-item m-2" style="font-family: 'Montserrat', sans-serif; color: #778899" onclick="activateTab('public')">Portal</a>
+                    <? if(user_permission == "Privilege" || user_permission == "Admin" || user_permission == "Advisor"){ ?>
+                    <a class="navbar-item m-1" style="font-family: 'Montserrat', sans-serif; color: #778899" onclick="activateTab('admin')">Admin</a>
                     <? } ?>
-                    <? if(user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
-                    <a class="navbar-item m-2" style="font-family: 'Montserrat', sans-serif; color: #778899" onclick="activateTab('admin')">Admin</a>
-                    <? } ?>
-                    <? if(user_permission == "外部"|| user_permission == "内部" || user_permission == "運営" || user_permission == "特殊" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
-                    <a class="navbar-item m-2" style="font-family: 'Montserrat', sans-serif; color: #778899" onclick="activateTab('about')">About</a>
-                    <? } ?>
+                    <a class="navbar-item m-1" style="font-family: 'Montserrat', sans-serif; color: #778899" onclick="activateTab('about')">About</a>
                 </div>
                 <div class="navbar-end">
                     <div class="navbar-item m-4" style="font-family: 'Montserrat', sans-serif; color: #778899">
                         <p>
                             ようこそ
-                            <?= user_name ?>さん (<?= user_permission ?>
-                            ユーザー)<br />
+                            <?= user_name ?>さん<br />
                         </p>
                     </div>
 
@@ -81,31 +76,32 @@
             </div>
             <div class="column" style="overflow: auto">
                 <!--  ここまでが固定(ヘッダー)　-->
-
+                <? if(user_permission == "Privilege" || user_permission == "Admin" || user_permission == "Advisor"){ ?>
+                <div class="notification is-danger is-light m-2 mx-4">システム管理ユーザーとして接続しています<br />このメッセージはPrivilge・Admin・Advisor権限を持つユーザーに表示されます</div>
+                <? } ?>
                 <!--<div class="notification is-danger is-light m-2">システムメンテナンス中...<br>一部機能の使用が制限されています</div>-->
-                <!-- <div class="notification is-info is-light m-2" id="index_near_activity">loading</div> -->
                 <section>
-                    <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+                    <? if(user_permission == "Inside" || user_permission == "Privilege" || user_permission == "Admin" || user_permission == "Advisor"){ ?>
                     <div class="tab-content mx-2" id="schedule-content">
                         <?!= HtmlService.createHtmlOutputFromFile("schedule/list").getContent(); ?>
                     </div>
                     <? } ?>
-                    <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+                    <? if(user_permission == "Inside" || user_permission == "Privilege" || user_permission == "Admin" || user_permission == "Advisor"){ ?>
                     <div id="member-content" class="tab-content mx-2" style="display: none">
                         <?!= HtmlService.createHtmlOutputFromFile("member/search").getContent(); ?>
                     </div>
                     <? } ?>
-                    <? if(user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+                    <? if(user_permission == "Inside" || user_permission == "Privilege" || user_permission == "Admin" || user_permission == "Advisor"){ ?>
                     <div class="tab-content mx-2" id="item-content" style="display: none">
                         <?!= HtmlService.createHtmlOutputFromFile("item/search").getContent(); ?>
                     </div>
                     <? } ?>
-                    <? if(user_permission == "内部" || user_permission== "運営" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+                    <? if(user_permission == "Inside" || user_permission == "Privilege" || user_permission == "Admin" || user_permission == "Advisor"){ ?>
                     <div class="tab-content mx-2" id="board-content" style="display: none">
-                        <?!= HtmlService.createHtmlOutputFromFile("board/list").getContent(); ?>
+                        <?!= HtmlService.createHtmlOutputFromFile("teapot").getContent(); ?>
                     </div>
                     <? } ?>
-                    <? if( user_permission == "内部" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+                    <? if(user_permission == "Inside" || user_permission == "Privilege" || user_permission == "Admin" || user_permission == "Advisor"){ ?>
                     <div class="tab-content mx-2" id="public-content" style="display: none">
                         <?!= HtmlService.createHtmlOutputFromFile("form/formlist").getContent(); ?>
                     </div>
@@ -115,18 +111,14 @@
                     </div>
                     <? } ?>
                     <div class="tab-content mx-2" id="admin-content" style="display: none">
-                        <? if(user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
+                        <? if(user_permission == "Privilege" || user_permission == "Admin" || user_permission == "Advisor"){ ?>
                         <?!= HtmlService.createHtmlOutputFromFile("admin").getContent(); ?>
                         <? }else{ ?>
                         <?!= HtmlService.createHtmlOutputFromFile("error").getContent(); ?>
                         <? } ?>
                     </div>
                     <div class="tab-content m-2" id="about-content" style="display: none">
-                        <? if(user_permission == "外部" || user_permission == "内部" || user_permission== "運営" || user_permission == "特権" || user_permission == "管理" || user_permission == "顧問"){ ?>
                         <?!= HtmlService.createHtmlOutputFromFile("about").getContent(); ?>
-                        <? }else{ ?>
-                        <?!= HtmlService.createHtmlOutputFromFile("error").getContent(); ?>
-                        <? } ?>
                     </div>
                 </section>
                 <script>
@@ -145,31 +137,6 @@
                     }
                 </script>
                 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-                <script>
-                    // The code in this function runs when the page is loaded.
-                    //$(function () {
-                    //    google.script.run.withSuccessHandler(noticeShowThings).getData('index');
-                    //});
-
-                    function noticeShowThings(things) {
-                        notice = document.getElementById('index_near_activity');
-                        notice.innerHTML =
-                            '<b>次回の活動</b><br>' +
-                            String(things[0][1]) +
-                            '/' +
-                            String(things[0][2]) +
-                            '(' +
-                            String(things[0][3]) +
-                            ') ' +
-                            String(things[0][4]) +
-                            ' ' +
-                            String(things[0][5]) +
-                            ' @' +
-                            String(things[0][6]) +
-                            '<br>備考:' +
-                            String(things[0][7]);
-                    }
-                </script>
             </div>
         </div>
     </body>

@@ -7,10 +7,6 @@
   <div class="m-6">
       <!-- フォームの部品 -->
       <div class="my-4">
-            <label for="id">認証コード</label>
-            <input type="text" id="code" class="input" placeholder="事前に伝えられている認証コードを入力してください">
-      </div>
-      <div class="my-4">
             <label for="name">固有学籍番号</label>
             <input type="number" id="number" class="input" placeholder="学生証に記載されている番号を記入してください">
       </div>
@@ -19,6 +15,10 @@
       <div class="my-4">
             <label for="class">学籍番号</label>
             <input type="number" id="class" class="input" disabled>
+      </div>
+      <div class="my-4">
+            <label for="email">メールアドレス</label>
+            <input type="email" id="email" class="input" disabled>
       </div>
       <div class="my-4">
             <label for="team">部署</label>
@@ -40,7 +40,7 @@
     btn_inquiry.value = "照会中..."
     $(function() {
     google.script.run.withSuccessHandler(showThings_inquiry)
-        .getData("member_new_inquery",document.getElementById('code').value,document.getElementById('number').value);
+        .getData("member_new_inquery",document.getElementById('number').value);
     });
   })
   function showThings_inquiry(things) {
@@ -53,9 +53,10 @@
       btn_inquiry.value = "照会"
     }else{
       document.getElementById('result').textContent = ""
-      document.getElementById('code').disabled = true
       document.getElementById('number').disabled = true
       document.getElementById('class').disabled = false
+      document.getElementById('email').value = things[1]
+      document.getElementById('email').disabled = false
       document.getElementById('team').disabled = false
       document.getElementById('name').disabled = false
       btn_inquiry.value = "照会"
@@ -69,7 +70,7 @@
     btn.value = "送信中..."
     $(function() {
     google.script.run.withSuccessHandler(showThings)
-        .sendData("member_new",document.getElementById('number').value,document.getElementById('class').value,document.getElementById('team').value,document.getElementById('name').value);
+        .sendData("member_new",document.getElementById('number').value,document.getElementById('class').value,document.getElementById('team').value,document.getElementById('name').value,document.getElementById('email').value);
     });
   })
   function showThings(things) {
@@ -80,6 +81,8 @@
     document.getElementById('class').disabled = true
     document.getElementById('team').disabled = true
     document.getElementById('name').disabled = true
+    document.getElementById('email').disabled = true
     document.getElementById('btn').disabled = true;
+    document.getElementById('number').disabled = false
   }
 </script>

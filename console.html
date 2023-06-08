@@ -1,0 +1,58 @@
+<html lang="ja">
+    <head>
+        <title>Polaris</title>
+        <base target="_top" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                var burger = $('.burger');
+                var menu = $('#' + burger.data('target'));
+
+                burger.on('click', function () {
+                    burger.toggleClass('is-active');
+                    menu.toggleClass('is-active');
+                });
+            });
+        </script>
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item is-size-2 pt-1 pr-6" style="font-family: 'Noto Sans JP', sans-serif; color: #004aad" href="<?= url ?>">Polaris-U</a>
+                <div class="navbar-burger burger" data-target="navbarMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+            <div id="navbarMenu" class="navbar-menu">
+                <div class="navbar-end">
+                    <div class="navbar-item m-4" style="font-family: 'Montserrat', sans-serif; color: #778899">
+                        <p>
+                            ようこそ
+                            <?= user_name ?>さん<br />
+                        </p>
+                    </div>
+
+                    <div class="navbar-item" style="font-family: 'Montserrat', sans-serif; color: #778899">
+                        <p>
+                            放送部webシステム<br />
+                            <c class="has-text-centered" style="font-size: 12px"> Polaris with you and for you</c>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </head>
+    <body>
+      <? if(page == "member_new"){ ?><?!= HtmlService.createHtmlOutputFromFile("member/new").getContent(); ?><? } ?>
+      <? if(page == "member_edit"){ ?><?!= HtmlService.createHtmlOutputFromFile("member/edit").getContent(); ?><? } ?>
+      <? if(page == "form_new"){ ?><?!= HtmlService.createHtmlOutputFromFile("form/new").getContent(); ?><? } ?>
+    </body>
+</html>

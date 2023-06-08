@@ -6,25 +6,11 @@
                 <div class="columns is-mobile">
                     <div class="column">
                         <span class="icon">
-                            <i class="fas fa-solid fa-user-plus"></i>
+                            <i class="fas fa-wrench"></i>
                         </span>
                     </div>
                     <div class="column">
-                        <span>作成</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="column">
-            <div class="card card-content content">
-                <div class="columns is-mobile">
-                    <div class="column">
-                        <span class="icon">
-                            <i class="fas fa-solid fa-users-gear"></i>
-                        </span>
-                    </div>
-                    <div class="column">
-                        <span>管理</span>
+                        <span>年度更新</span>
                     </div>
                 </div>
             </div>
@@ -38,43 +24,80 @@
                         </span>
                     </div>
                     <div class="column">
-                        <span>一括操作</span>
+                        <span>引継ぎ</span>
                     </div>
                 </div>
             </div>
         </div>
         <div class="column">
-            <div class="card card-content content">
+          <div class="card card-content content">
+            <a id="member-plus-console" target="_blank" style="color:inherit;">
+              <div class="columns is-mobile">
+                <div class="column">
+                  <span class="icon">
+                    <i class="fas fa-user-plus"></i>
+                  </span>
+                </div>
+                <div class="column">
+                  <span>登録</span>
+                </div>
+              </div>
+            </a>  
+          </div>
+        </div>
+        <div class="column">
+          <div class="card card-content content">
+            <a id="member-update-console" target="_blank" style="color:inherit;">
                 <div class="columns is-mobile">
                     <div class="column">
                         <span class="icon">
-                            <i class="fas fa-solid fa-users-line"></i>
+                            <i class="fas fa-user-edit"></i>
                         </span>
                     </div>
                     <div class="column">
-                        <span>権限設定</span>
+                        <span>更新</span>
                     </div>
                 </div>
+            </a>
             </div>
         </div>
     </div>
     <div class="columns m-3">
         <div class="column">
             <div class="card card-content content">
+              <a id="member-absence-console" target="_blank" style="color:inherit;">
                 <div class="columns is-mobile">
                     <div class="column">
                         <span class="icon">
-                            <i class="fas fa-sharp fa-solid fa-user-magnifying-glass"></i>
+                            <i class="fas fa-users-slash"></i>
                         </span>
                     </div>
                     <div class="column">
                         <span>欠席検索</span>
                     </div>
                 </div>
+              </a>
             </div>
         </div>
         <div class="column">
             <div class="card card-content content">
+              <a id="portal-plus-console" target="_blank" style="color:inherit;">
+                <div class="columns is-mobile">
+                    <div class="column">
+                        <span class="icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </span>
+                    </div>
+                    <div class="column">
+                        <span>ポータル投稿</span>
+                    </div>
+                </div>
+              </a>
+            </div>
+        </div>
+        <div class="column">
+            <div class="card card-content content">
+              <a id="portal-manage-console" target="_blank" style="color:inherit;">
                 <div class="columns is-mobile">
                     <div class="column">
                         <span class="icon">
@@ -82,12 +105,19 @@
                         </span>
                     </div>
                     <div class="column">
-                        <span>DB削除</span>
+                        <span>ポータル管理</span>
                     </div>
                 </div>
+              </a>
             </div>
         </div>
         <div class="column"></div>
-        <div class="column"></div>
     </div>
 </section>
+<script>
+  url = document.getElementById("baseurl").value
+  document.getElementById("member-plus-console").href = url + "/console?page=member_new"
+  document.getElementById("member-update-console").href = url + "/console?page=member_edit"
+  document.getElementById("portal-plus-console").href = url + "/console?page=form_new"
+  document.getElementById("portal-manage-console").href = url + "/console?page=form_edit"
+</script>
