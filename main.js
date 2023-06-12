@@ -315,9 +315,8 @@ function sendData() {
             var date_array = date.split('-');
             var hold_day = new Date(Number(date_array[0]), Number(date_array[1]) - 1, date_array[2].split('T')[0]);
             var day_youbi = WeekChars[hold_day.getDay()];
-            var owner = member_db.getRange(Number(row),9).getValue()
             schedule_db
-                .getRange(row, 1, 1, 10)
+                .getRange(row, 1, 1, 8)
                 .setValues([
                     [
                         date_array[0],
@@ -328,10 +327,9 @@ function sendData() {
                         arguments[3],
                         arguments[4],
                         arguments[5],
-                        owner,
-                        arguments[2],
                     ],
                 ]);
+            schedule_db.getRange(row,10,1,1).setValue(arguments[2])
             schedule_db.getRange(row, 10).setNumberFormat('yyyy"-"mm"-"dd hh":"mm');
             schedule_db.getRange(row, 1).setNumberFormat('@');
             schedule_db.getRange(row, 2).setNumberFormat('@');
