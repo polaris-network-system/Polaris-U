@@ -1,66 +1,61 @@
 <section class="m-3">
-  <div class="hero">
-    <div class="hero-body">
-      <p class="title">フォーム公開状況照会</p>
-      <p class="sub-title" id="result_text"></p>
-    </div>
-  </div>
-  <div id="data">
     <div class="hero">
-      <div class="hero-body my-6">
-        <p class="title">loading...</p>
-      </div>
+        <div class="hero-body">
+            <p class="title">フォーム公開状況照会</p>
+            <p class="sub-title" id="result_text"></p>
+        </div>
     </div>
-  </div>
-  <div>
-    <table width="100%"　border=1 class="table" id="sort_table">
-      <tr id="header">
-      </tr>
-    </table>
-  </div>
+    <div id="data">
+        <div class="hero">
+            <div class="hero-body my-6">
+                <p class="title">loading...</p>
+            </div>
+        </div>
+    </div>
+    <div>
+        <table width="100%" 　border="1" class="table" id="sort_table">
+            <tr id="header"></tr>
+        </table>
+    </div>
 </section>
-<script
-  src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
-</script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
-  // The code in this function runs when the page is loaded.
-  $(function() {
-    google.script.run.withSuccessHandler(showThings)
-        .getData("form_list");
-  });
+    // The code in this function runs when the page is loaded.
+    $(function () {
+        google.script.run.withSuccessHandler(showThings).getData('form_list');
+    });
 
-  function showThings(things) {
-    if(things.length == 1){
-      var data_area = document.getElementById('data')
-      data_area.textContent = ""
-      content = '<div id="data"><div class="hero"><div class="hero-body my-6"><p class="title">該当なし</p></div></div></div>'
-      data_area.insertAdjacentHTML("afterbegin",content)
-    }else{
-      var data_header = document.getElementById('header')
-      var data_body = document.getElementById('sort_table')
-      var data_area = document.getElementById('data')
-      data_area.textContent = ""
+    function showThings(things) {
+        if (things.length == 1) {
+            var data_area = document.getElementById('data');
+            data_area.textContent = '';
+            content = '<div id="data"><div class="hero"><div class="hero-body my-6"><p class="title">該当なし</p></div></div></div>';
+            data_area.insertAdjacentHTML('afterbegin', content);
+        } else {
+            var data_header = document.getElementById('header');
+            var data_body = document.getElementById('sort_table');
+            var data_area = document.getElementById('data');
+            data_area.textContent = '';
 
-      element_tmp = ""
-      for (var i = 0; i < things[0].length; i++){
-        element_tmp += '<th>' + things[0][i] + '</th>'
-      }
-      data_header.insertAdjacentHTML('beforebegin',element_tmp)
+            element_tmp = '';
+            for (var i = 0; i < things[0].length; i++) {
+                element_tmp += '<th>' + things[0][i] + '</th>';
+            }
+            data_header.insertAdjacentHTML('beforebegin', element_tmp);
 
-      for (var i = 1; i < things.length; i++) {
+            for (var i = 1; i < things.length; i++) {
+                var trele = document.createElement('tr');
 
-        var trele = document.createElement("tr")
-
-        for (var j=0; j < things[i].length; j++) {
-          var tdele = document.createElement("td")
-          var text = document.createTextNode(String(things[i][j]))
-          tdele.appendChild(text)
-          trele.appendChild(tdele)
+                for (var j = 0; j < things[i].length; j++) {
+                    var tdele = document.createElement('td');
+                    var text = document.createTextNode(String(things[i][j]));
+                    tdele.appendChild(text);
+                    trele.appendChild(tdele);
+                }
+                data_body.appendChild(trele);
+            }
+            content = '一致件数：' + (things.length - 1) + '件';
+            document.getElementById('result_text').textContent = content;
         }
-        data_body.appendChild(trele)
-      }
-      content = "一致件数：" + (things.length -1) + "件"
-      document.getElementById('result_text').textContent = content
     }
-  }
 </script>

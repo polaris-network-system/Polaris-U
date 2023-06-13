@@ -1,108 +1,102 @@
 <section class="m-3">
-  <div class="hero">
-    <div class="hero-body">
-      <p class="title">欠席申請状況照会</p>
-      <p class="sub-title" id="result_text"></p>
-    </div>
-  </div>
-  <div class="my-3">
-      <!-- フォームの部品 -->
-      <div class="columns">
-        <div class="column">
-          <input type="text" id="word" name="word" class="input mx-4" placeholder="欠席日、氏名、固有学籍番号などで検索">
-        </div>
-        <div class="column is-one-fifth">
-          <input type="submit" value="検索" class="button is-outline is-info mx-4" id="btn">
-        </div>
-      </div>
-  </div>
-  <div id="data">
     <div class="hero">
-      <div class="hero-body my-6">
-        <p class="title">loading...</p>
-      </div>
+        <div class="hero-body">
+            <p class="title">欠席申請状況照会</p>
+            <p class="sub-title" id="result_text"></p>
+        </div>
     </div>
-  </div>
-  <div>
-    <table width="100%"　border=1 class="table" id="sort_table">
-      <tr id="header">
-      </tr>
-    </table>
-  </div>
+    <div class="my-3">
+        <!-- フォームの部品 -->
+        <div class="columns">
+            <div class="column">
+                <input type="text" id="word" name="word" class="input mx-4" placeholder="欠席日、氏名、固有学籍番号などで検索" />
+            </div>
+            <div class="column is-one-fifth">
+                <input type="submit" value="検索" class="button is-outline is-info mx-4" id="btn" />
+            </div>
+        </div>
+    </div>
+    <div id="data">
+        <div class="hero">
+            <div class="hero-body my-6">
+                <p class="title">loading...</p>
+            </div>
+        </div>
+    </div>
+    <div>
+        <table width="100%" class="table" id="sort_table">
+            <tr id="header"></tr>
+        </table>
+    </div>
 </section>
-<script
-  src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
-</script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
-  var btn = document.getElementById('btn');
-  btn.addEventListener('click', function() {
-    btn.value = "検索中..."
-    var data_area = document.getElementById('data')
-    var data_table = document.getElementById('sort_table')
-    data_area.textContent = ""
-    content = '<div id="data"><div class="hero"><div class="hero-body my-6"><p class="title">Searching...</p></div></div></div>'
-    data_area.insertAdjacentHTML("afterbegin",content)
-    
-    data_table.textContent = ""
-    content = '<tr id="header"></tr>'
-    data_table.insertAdjacentHTML("afterbegin",content)
-    $(function() {
-    google.script.run.withSuccessHandler(showThings)
-        .getData("absence_list",document.getElementById('word').value);
+    var btn = document.getElementById('btn');
+    btn.addEventListener('click', function () {
+        btn.value = '検索中...';
+        var data_area = document.getElementById('data');
+        var data_table = document.getElementById('sort_table');
+        data_area.textContent = '';
+        content = '<div id="data"><div class="hero"><div class="hero-body my-6"><p class="title">Searching...</p></div></div></div>';
+        data_area.insertAdjacentHTML('afterbegin', content);
+
+        data_table.textContent = '';
+        content = '<tr id="header"></tr>';
+        data_table.insertAdjacentHTML('afterbegin', content);
+        $(function () {
+            google.script.run.withSuccessHandler(showThings).getData('absence_list', document.getElementById('word').value);
+        });
     });
-  })
 </script>
 <script>
-  // The code in this function runs when the page is loaded.
-  var today = new Date();
-  function twostring(number){
-    if  (number < 10){
-      return "0" + number
-    }else{
-      return number
-    }
-  }
-  today_format = today.getFullYear() + "-" + twostring(today.getMonth()+1) + "-" + twostring(today.getDate())
-  $(function() {
-    google.script.run.withSuccessHandler(showThings)
-        .getData("absence_list",today_format);
-  });
-
-  function showThings(things) {
-    if(things.length == 1){
-      var data_area = document.getElementById('data')
-      data_area.textContent = ""
-      content = '<div id="data"><div class="hero"><div class="hero-body my-6"><p class="title">該当なし</p></div></div></div>'
-      data_area.insertAdjacentHTML("afterbegin",content)
-      content = "一致件数：0件"
-      document.getElementById('result_text').textContent = content
-    }else{
-      var data_header = document.getElementById('header')
-      var data_body = document.getElementById('sort_table')
-      var data_area = document.getElementById('data')
-      data_area.textContent = ""
-
-      element_tmp = ""
-      for (var i = 0; i < things[0].length; i++){
-        element_tmp += '<th>' + things[0][i] + '</th>'
-      }
-      data_header.insertAdjacentHTML('beforebegin',element_tmp)
-
-      for (var i = 1; i < things.length; i++) {
-
-        var trele = document.createElement("tr")
-
-        for (var j=0; j < things[i].length; j++) {
-          var tdele = document.createElement("td")
-          var text = document.createTextNode(String(things[i][j]))
-          tdele.appendChild(text)
-          trele.appendChild(tdele)
+    // The code in this function runs when the page is loaded.
+    var today = new Date();
+    function twostring(number) {
+        if (number < 10) {
+            return '0' + number;
+        } else {
+            return number;
         }
-        data_body.appendChild(trele)
-      }
-      content = "一致件数：" + (things.length -1) + "件"
-      document.getElementById('result_text').textContent = content
     }
-    btn.value = "検索"
-  }
+    today_format = today.getFullYear() + '-' + twostring(today.getMonth() + 1) + '-' + twostring(today.getDate());
+    $(function () {
+        google.script.run.withSuccessHandler(showThings).getData('absence_list', today_format);
+    });
+
+    function showThings(things) {
+        if (things.length == 1) {
+            var data_area = document.getElementById('data');
+            data_area.textContent = '';
+            content = '<div id="data"><div class="hero"><div class="hero-body my-6"><p class="title">該当なし</p></div></div></div>';
+            data_area.insertAdjacentHTML('afterbegin', content);
+            content = '一致件数：0件';
+            document.getElementById('result_text').textContent = content;
+        } else {
+            var data_header = document.getElementById('header');
+            var data_body = document.getElementById('sort_table');
+            var data_area = document.getElementById('data');
+            data_area.textContent = '';
+
+            element_tmp = '';
+            for (var i = 0; i < things[0].length; i++) {
+                element_tmp += '<th>' + things[0][i] + '</th>';
+            }
+            data_header.insertAdjacentHTML('beforebegin', element_tmp);
+
+            for (var i = 1; i < things.length; i++) {
+                var trele = document.createElement('tr');
+
+                for (var j = 0; j < things[i].length; j++) {
+                    var tdele = document.createElement('td');
+                    var text = document.createTextNode(String(things[i][j]));
+                    tdele.appendChild(text);
+                    trele.appendChild(tdele);
+                }
+                data_body.appendChild(trele);
+            }
+            content = '一致件数：' + (things.length - 1) + '件';
+            document.getElementById('result_text').textContent = content;
+        }
+        btn.value = '検索';
+    }
 </script>

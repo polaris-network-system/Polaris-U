@@ -1,138 +1,148 @@
 <section class="m-3">
-  <div class="hero">
-    <div class="hero-body">
-      <p class="title">フォーム登録情報更新</p>
+    <div class="hero">
+        <div class="hero-body">
+            <p class="title">フォーム登録情報更新</p>
+        </div>
     </div>
-  </div>
-  <div class="m-6">
-      <!-- フォームの部品 -->
-      <div class="my-4">
+    <div class="m-6">
+        <!-- フォームの部品 -->
+        <div class="my-4">
             <label for="id">フォームID</label>
-            <input type="number" id="id" name="id" class="input" placeholder="照会画面に表示されるフォームIDを入力してください">
-      </div>
-      <input type="submit" value="照会" class="button is-outline is-info" id="btn_inquiry"><br><br>
-      <strong id="result" class="has-text-danger"></strong>
-      <div class="my-4">
+            <input type="number" id="id" name="id" class="input" placeholder="照会画面に表示されるフォームIDを入力してください" />
+        </div>
+        <input type="submit" value="照会" class="button is-outline is-info" id="btn_inquiry" /><br /><br />
+        <strong id="result" class="has-text-danger"></strong>
+        <div class="my-4">
             <label>締め切り日</label>
-            <input type="number" id="month" class="input my-2" placeholder="月">
-            <input type="number" id="day" class="input my-2" placeholder="日">
-            <input type="text" id="time" class="input my-2" placeholder="時間">
-      </div>
-      <div class="my-4">
+            <p class="help is-danger">自動締め切り機能はありません</p>
+            <input type="number" id="month" class="input my-2" placeholder="月" />
+            <input type="number" id="day" class="input my-2" placeholder="日" />
+            <input type="text" id="time" class="input my-2" placeholder="時間" />
+        </div>
+        <div class="my-4">
             <label for="name">フォーム名</label>
-            <input type="text" id="name" class="input">
-      </div>
-      <div class="my-4">
+            <input type="text" id="name" class="input" />
+        </div>
+        <div class="my-4">
             <label for="target">対象</label>
-            <input type="text" id="target" class="input">
-      </div>
-      <div class="my-4">
+            <input type="text" id="target" class="input" />
+        </div>
+        <div class="my-4">
             <label for="content">備考</label>
-            <input type="text" id="content" class="input">
-      </div>
-      <div class="my-4">
+            <input type="text" id="content" class="input" />
+        </div>
+        <div class="my-4">
             <label for="url">フォームURL</label>
-            <input type="text" id="url" class="input">
-      </div>
-      <div class="my-4">
+            <input type="text" id="url" class="input" />
+        </div>
+        <div class="my-4">
             <label for="status">状態</label>
-            <input type="text" id="status" class="input">
-      </div>
-      <input type="submit" value="情報更新" class="button is-outline is-info" id="btn_update" disabled>
-      <input type="submit" value="削除" class="button is-outline is-danger" id="btn_delete" disabled>
-  </div>
+            <input type="text" id="status" class="input" />
+            <p class="help">「締め切り」にすると一覧から表示されなくなります</p>
+        </div>
+        <input type="submit" value="情報更新" class="button is-outline is-info" id="btn_update" disabled />
+        <input type="submit" value="削除" class="button is-outline is-danger" id="btn_delete" disabled />
+    </div>
 </section>
-<script
-  src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
-</script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
-  var btn_inquiry = document.getElementById('btn_inquiry');
-  btn_inquiry.addEventListener('click', function() {
-    btn_inquiry.value = "照会中..."
-    $(function() {
-    google.script.run.withSuccessHandler(showThings_inquiry)
-        .getData("form_inquery",document.getElementById('id').value);
+    var btn_inquiry = document.getElementById('btn_inquiry');
+    btn_inquiry.addEventListener('click', function () {
+        btn_inquiry.value = '照会中...';
+        $(function () {
+            google.script.run.withSuccessHandler(showThings_inquiry).getData('form_inquery', document.getElementById('id').value);
+        });
     });
-  })
-  function showThings_inquiry(things) {
-    if(things[0] == "bad"){
-      document.getElementById('result').textContent = "入力されたIDに該当する投稿がありません"
-      document.getElementById('month').value = ""
-      document.getElementById('day').value = ""
-      document.getElementById('time').value = ""
-      document.getElementById('name').value = ""
-      document.getElementById('target').value = ""
-      document.getElementById('content').value = ""
-      document.getElementById('url').value = ""
-      document.getElementById('status').value = ""
-      btn_inquiry.value = "照会"
-      document.getElementById('btn_delete').disabled = true;
-      document.getElementById('btn_update').disabled = true;
-    }else if(things[0] == "ok"){
-      document.getElementById('result').textContent = ""
-      document.getElementById('month').value = things[1][0][0]
-      document.getElementById('day').value = things[1][0][1]
-      document.getElementById('time').value = things[1][0][2]
-      document.getElementById('name').value = things[1][0][3]
-      document.getElementById('target').value = things[1][0][4]
-      document.getElementById('content').value = things[1][0][5]
-      document.getElementById('url').value = things[1][0][6]
-      document.getElementById('status').value = things[1][0][7]
-      btn_inquiry.value = "照会"
-      document.getElementById('btn_delete').disabled = false;
-      document.getElementById('btn_update').disabled = false;
+    function showThings_inquiry(things) {
+        if (things[0] == 'bad') {
+            document.getElementById('result').textContent = '入力されたIDに該当する投稿がありません';
+            document.getElementById('month').value = '';
+            document.getElementById('day').value = '';
+            document.getElementById('time').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('target').value = '';
+            document.getElementById('content').value = '';
+            document.getElementById('url').value = '';
+            document.getElementById('status').value = '';
+            btn_inquiry.value = '照会';
+            document.getElementById('btn_delete').disabled = true;
+            document.getElementById('btn_update').disabled = true;
+        } else if (things[0] == 'ok') {
+            document.getElementById('result').textContent = '';
+            document.getElementById('month').value = things[1][0][0];
+            document.getElementById('day').value = things[1][0][1];
+            document.getElementById('time').value = things[1][0][2];
+            document.getElementById('name').value = things[1][0][3];
+            document.getElementById('target').value = things[1][0][4];
+            document.getElementById('content').value = things[1][0][5];
+            document.getElementById('url').value = things[1][0][6];
+            document.getElementById('status').value = things[1][0][7];
+            btn_inquiry.value = '照会';
+            document.getElementById('btn_delete').disabled = false;
+            document.getElementById('btn_update').disabled = false;
+        }
     }
-  }
 </script>
 <script>
-  var btn = document.getElementById('btn_delete');
-  btn.addEventListener('click', function() {
-    document.getElementById('btn_delete').value = "リクエスト送信中..."
-    $(function() {
-    google.script.run.withSuccessHandler(showThingsdlt)
-        .sendData("form_delete",document.getElementById('id').value);
+    var btn = document.getElementById('btn_delete');
+    btn.addEventListener('click', function () {
+        document.getElementById('btn_delete').value = 'リクエスト送信中...';
+        $(function () {
+            google.script.run.withSuccessHandler(showThingsdlt).sendData('form_delete', document.getElementById('id').value);
+        });
     });
-  })
-  function showThingsdlt(things) {
-    message = "削除しました"
-    window.alert(message)
-    document.getElementById('btn_delete').value = "削除"
-    document.getElementById('id').value = ""
-    document.getElementById('month').value = ""
-    document.getElementById('day').value = ""
-    document.getElementById('time').value = ""
-    document.getElementById('name').value = ""
-    document.getElementById('target').value = ""
-    document.getElementById('content').value = ""
-    document.getElementById('url').value = ""
-    document.getElementById('status').value = ""
-    document.getElementById('btn_delete').disabled = true;
-    document.getElementById('btn_update').disabled = true;
-  }
+    function showThingsdlt(things) {
+        message = '削除しました';
+        window.alert(message);
+        document.getElementById('btn_delete').value = '削除';
+        document.getElementById('id').value = '';
+        document.getElementById('month').value = '';
+        document.getElementById('day').value = '';
+        document.getElementById('time').value = '';
+        document.getElementById('name').value = '';
+        document.getElementById('target').value = '';
+        document.getElementById('content').value = '';
+        document.getElementById('url').value = '';
+        document.getElementById('status').value = '';
+        document.getElementById('btn_delete').disabled = true;
+        document.getElementById('btn_update').disabled = true;
+    }
 </script>
 <script>
-  var btn = document.getElementById('btn_update');
-  btn.addEventListener('click', function() {
-    btn.value = "リクエスト送信中..."
-    $(function() {
-    google.script.run.withSuccessHandler(showThingsup)
-        .sendData("form_update",document.getElementById('id').value,document.getElementById('month').value,document.getElementById('day').value,document.getElementById('time').value,document.getElementById('name').value,document.getElementById('target').value,document.getElementById('content').value,document.getElementById('url').value,document.getElementById('status').value);
+    var btn = document.getElementById('btn_update');
+    btn.addEventListener('click', function () {
+        btn.value = 'リクエスト送信中...';
+        $(function () {
+            google.script.run
+                .withSuccessHandler(showThingsup)
+                .sendData(
+                    'form_update',
+                    document.getElementById('id').value,
+                    document.getElementById('month').value,
+                    document.getElementById('day').value,
+                    document.getElementById('time').value,
+                    document.getElementById('name').value,
+                    document.getElementById('target').value,
+                    document.getElementById('content').value,
+                    document.getElementById('url').value,
+                    document.getElementById('status').value
+                );
+        });
     });
-  })
-  function showThingsup(things) {
-    message = "更新しました"
-    window.alert(message)
-    btn.value = "情報更新"
-    document.getElementById('id').value = ""
-    document.getElementById('month').value = ""
-    document.getElementById('day').value = ""
-    document.getElementById('time').value = ""
-    document.getElementById('name').value = ""
-    document.getElementById('target').value = ""
-    document.getElementById('content').value = ""
-    document.getElementById('url').value = ""
-    document.getElementById('status').value = ""
-    document.getElementById('btn_delete').disabled = true;
-    document.getElementById('btn_update').disabled = true;
-  }
+    function showThingsup(things) {
+        message = '更新しました';
+        window.alert(message);
+        btn.value = '情報更新';
+        document.getElementById('id').value = '';
+        document.getElementById('month').value = '';
+        document.getElementById('day').value = '';
+        document.getElementById('time').value = '';
+        document.getElementById('name').value = '';
+        document.getElementById('target').value = '';
+        document.getElementById('content').value = '';
+        document.getElementById('url').value = '';
+        document.getElementById('status').value = '';
+        document.getElementById('btn_delete').disabled = true;
+        document.getElementById('btn_update').disabled = true;
+    }
 </script>

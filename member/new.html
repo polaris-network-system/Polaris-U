@@ -1,88 +1,93 @@
 <section class="m-3">
-  <div class="hero">
-    <div class="hero-body">
-      <p class="title">新規ユーザー登録</p>
+    <div class="hero">
+        <div class="hero-body">
+            <p class="title">新規ユーザー登録</p>
+        </div>
     </div>
-  </div>
-  <div class="m-6">
-      <!-- フォームの部品 -->
-      <div class="my-4">
+    <div class="m-6">
+        <!-- フォームの部品 -->
+        <div class="my-4">
             <label for="name">固有学籍番号</label>
-            <input type="number" id="number" class="input" placeholder="学生証に記載されている番号を記入してください">
-      </div>
-      <input type="submit" value="照会" class="button is-outline is-info" id="btn_inquiry"><br><br>
-      <strong id="result" class="has-text-danger"></strong>
-      <div class="my-4">
+            <input type="number" id="number" class="input" placeholder="学生証に記載されている番号を記入してください" />
+        </div>
+        <input type="submit" value="照会" class="button is-outline is-info" id="btn_inquiry" /><br /><br />
+        <strong id="result" class="has-text-danger"></strong>
+        <div class="my-4">
             <label for="class">学籍番号</label>
-            <input type="number" id="class" class="input" disabled>
-      </div>
-      <div class="my-4">
+            <input type="number" id="class" class="input" disabled />
+        </div>
+        <div class="my-4">
             <label for="email">メールアドレス</label>
-            <input type="email" id="email" class="input" disabled>
-      </div>
-      <div class="my-4">
+            <input type="email" id="email" class="input" disabled />
+        </div>
+        <div class="my-4">
             <label for="team">部署</label>
-            <input type="text" id="team" class="input" disabled>
-      </div>
-      <div class="my-4">
+            <input type="text" id="team" class="input" disabled />
+        </div>
+        <div class="my-4">
             <label for="name">氏名</label>
-            <input type="text" id="name" class="input" disabled>
-      </div>
-      <input type="submit" value="登録する" class="button is-outline is-info" id="btn">
-  </div>
+            <input type="text" id="name" class="input" disabled />
+        </div>
+        <input type="submit" value="登録する" class="button is-outline is-info" id="btn" />
+    </div>
 </section>
-<script
-  src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
-</script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
-  var btn_inquiry = document.getElementById('btn_inquiry');
-  btn_inquiry.addEventListener('click', function() {
-    btn_inquiry.value = "照会中..."
-    $(function() {
-    google.script.run.withSuccessHandler(showThings_inquiry)
-        .getData("member_new_inquery",document.getElementById('number').value);
+    var btn_inquiry = document.getElementById('btn_inquiry');
+    btn_inquiry.addEventListener('click', function () {
+        btn_inquiry.value = '照会中...';
+        $(function () {
+            google.script.run.withSuccessHandler(showThings_inquiry).getData('member_new_inquery', document.getElementById('number').value);
+        });
     });
-  })
-  function showThings_inquiry(things) {
-    if(things[0] == "bad"){
-      document.getElementById('result').textContent = "入力された認証コードは不正です"
-      btn_inquiry.value = "照会"
-      document.getElementById('btn').disabled = true;
-    }else if(things[0] == "already"){
-      document.getElementById('result').textContent = "入力された固有学籍番号はすでに登録されています"
-      btn_inquiry.value = "照会"
-    }else{
-      document.getElementById('result').textContent = ""
-      document.getElementById('number').disabled = true
-      document.getElementById('class').disabled = false
-      document.getElementById('email').value = things[1]
-      document.getElementById('email').disabled = false
-      document.getElementById('team').disabled = false
-      document.getElementById('name').disabled = false
-      btn_inquiry.value = "照会"
-      document.getElementById('btn').disabled = false;
+    function showThings_inquiry(things) {
+        if (things[0] == 'bad') {
+            document.getElementById('result').textContent = '入力された認証コードは不正です';
+            btn_inquiry.value = '照会';
+            document.getElementById('btn').disabled = true;
+        } else if (things[0] == 'already') {
+            document.getElementById('result').textContent = '入力された固有学籍番号はすでに登録されています';
+            btn_inquiry.value = '照会';
+        } else {
+            document.getElementById('result').textContent = '';
+            document.getElementById('number').disabled = true;
+            document.getElementById('class').disabled = false;
+            document.getElementById('email').value = things[1];
+            document.getElementById('email').disabled = false;
+            document.getElementById('team').disabled = false;
+            document.getElementById('name').disabled = false;
+            btn_inquiry.value = '照会';
+            document.getElementById('btn').disabled = false;
+        }
     }
-  }
 </script>
 <script>
-  var btn = document.getElementById('btn');
-  btn.addEventListener('click', function() {
-    btn.value = "送信中..."
-    $(function() {
-    google.script.run.withSuccessHandler(showThings)
-        .sendData("member_new",document.getElementById('number').value,document.getElementById('class').value,document.getElementById('team').value,document.getElementById('name').value,document.getElementById('email').value);
+    var btn = document.getElementById('btn');
+    btn.addEventListener('click', function () {
+        btn.value = '送信中...';
+        $(function () {
+            google.script.run
+                .withSuccessHandler(showThings)
+                .sendData(
+                    'member_new',
+                    document.getElementById('number').value,
+                    document.getElementById('class').value,
+                    document.getElementById('team').value,
+                    document.getElementById('name').value,
+                    document.getElementById('email').value
+                );
+        });
     });
-  })
-  function showThings(things) {
-    message = "成功しました\n固有学籍番号：" + things[0] + "\n名前：" + things[1]
-    window.alert(message)
-    btn.value = "登録"
-    document.getElementById('result').textContent = "正常に処理が終了しました\n画面上部のロゴからトップページに戻ってください"
-    document.getElementById('class').disabled = true
-    document.getElementById('team').disabled = true
-    document.getElementById('name').disabled = true
-    document.getElementById('email').disabled = true
-    document.getElementById('btn').disabled = true;
-    document.getElementById('number').disabled = false
-  }
+    function showThings(things) {
+        message = '成功しました\n固有学籍番号：' + things[0] + '\n名前：' + things[1];
+        window.alert(message);
+        btn.value = '登録';
+        document.getElementById('result').textContent = '正常に処理が終了しました\n画面上部のロゴからトップページに戻ってください';
+        document.getElementById('class').disabled = true;
+        document.getElementById('team').disabled = true;
+        document.getElementById('name').disabled = true;
+        document.getElementById('email').disabled = true;
+        document.getElementById('btn').disabled = true;
+        document.getElementById('number').disabled = false;
+    }
 </script>
