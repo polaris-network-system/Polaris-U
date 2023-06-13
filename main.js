@@ -9,12 +9,6 @@ function findRow(sheet, val, col) {
     return 0;
 }
 
-// TODO
-// GASのデプロイテストでエラー
-// sendEmailと呼び出し元をコメントアウトしても治らず
-// 要検証
-// 2023/06/12
-
 // Gmailの送信
 function sendEmail(sheet, mailcol, consentcol, title, content) {
     // sheet : ユーザーDBのシートオブジェクト
@@ -24,13 +18,14 @@ function sendEmail(sheet, mailcol, consentcol, title, content) {
     // contet : 本文、呼び出し元関数で生成する
     var emails = '';
     for (let i = 1; i < sheet.getLastRow()+1; i++) {
-        if (sheet.getRange(i, consentcol).getValue() == 'true' || sheet.getRange(i, consentcol).getValue() == 'TRUE' || sheet.getRange(i, consentcol).getValue() == true) {
+        permission = sheet.getRange(i, (consentcol -1 )).getValue()
+        if ((sheet.getRange(i, consentcol).getValue() == 'true' || sheet.getRange(i, consentcol).getValue() == 'TRUE' || sheet.getRange(i, consentcol).getValue() == true) && (permission == 'Inside' || permission == 'Privilege' || permission == 'Admin' || permission == 'Adv)) {
             emails += sheet.getRange(i, mailcol).getValue() + ',';
         } else {
         }
     }
     var header = '<p class="navbar-item is-size-2 pt-1 pr-6" style="font-family: "Noto Sans JP", sans-serif; color: #004aad">Polaris-Uよりお知らせします</p>';
-    var footer = '<strong>Polaris-U</strong><br><p>配信停止はMypageから手続きしてください</p>';
+    var footer = '<br><br><br><br><strong>放送部活動支援プラットフォーム Polaris-U</strong><br><p>配信停止や配信の再開は<a href="https://script.google.com/a/oks.city-saitama.ed.jp/macros/s/AKfycbzmdIa50dzjEQYjV1Y4jKZS0PoEKeYFEZfpBHR8V0U/exec/settings_mail">こちら</a>からアクセスしてください<br>URLの末尾が「/exec/settings_email」になるようにしてアクセスすることでも可能です';
     var Draft = GmailApp.createDraft("", title, "body" , {
         name: "Polaris-U",
         htmlBody: (header+content+footer).replaceAll('\n', '<br>'),
@@ -129,7 +124,15 @@ function twoInt(number) {
 function doGet(e) {
     // URLのexec/(またはdev/)以降を取得
     var page = e.pathInfo ? e.pathInfo : 'index';
+    var settings_flag = ""
 
+    // 設定変更用のURLを矯正
+    if(page == "settings_mail"){
+        settings_flag = "settings_email"
+        page = 'index'
+    } else {
+
+    }
     // 該当するテンプレートを取得する
     var template = (() => {
         try {
@@ -158,6 +161,16 @@ function doGet(e) {
     } catch {
         var user_permission = 'Outside';
         var user_name = '匿名';
+    }
+
+    // 設定変更
+    if (settings_flag == "settings_email"){
+        var now_setting = member_db.getRange(findRow(member_db, LOGIN_USER, 5), 8).getValue()
+        if (now_setting == "true" || now_setting == true){
+            member_db.getRange(findRow(member_db, LOGIN_USER, 5), 8).setValue("false")
+        }else if(now_setting == "false" || now_setting == false){
+            member_db.getRange(findRow(member_db, LOGIN_USER, 5), 8).setValue("true")
+        }
     }
 
     // htmlを返す
@@ -339,6 +352,7 @@ function sendData() {
 
             // メール配信関係
             var title = '新規部活日程が追加されました';
+            var signature = member_db.getRange(findRow(member_db, LOGIN_USER, 5), 4).getValue() + "さんによって新規部活動予定が作成されました\n\n"
             var content = '活動内容：' + arguments[2];
             content += '\n活動日時:' + date_array[0] + '/' + date_array[1] + '/' + date_array[2].split('T')[0] + '(' + day_youbi + ') ' + date_array[2].split('T')[1];
             content += '\n活動場所：' + arguments[3];
@@ -360,7 +374,7 @@ function sendData() {
                 date_array[2].split(':')[1] +
                 '00&details=' +
                 arguments[4] + '">カレンダーに追加</a>\n\n';
-            sendEmail(member_db, 5, 8, title, content + url);
+            sendEmail(member_db, 5, 8, title, signature + content + url);
             return [arguments[2], String(arguments[1])];
 
         case 'schedule_update':
@@ -502,5 +516,10 @@ function sendData() {
         case 'member_delete':
             member_db.deleteRow(arguments[1]);
             return [];
+        
+        case 'mail_send':
+            var signature = "\n\nこのメールは" + member_db.getRange(findRow(member_db, LOGIN_USER, 5), 4).getValue() + "さんによって作成されました\n\n"
+            sendEmail(member_db,5,8,arguments[1],arguments[2] + signature)
+            return ["ok"];
     }
 }
