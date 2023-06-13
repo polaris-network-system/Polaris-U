@@ -2,34 +2,6 @@
     <div class="notification is-danger is-light m-2">システムメンテナンス中...<br />管理ポータルの一部機能の使用が制限されています<br /></div>
     <div class="columns m-3">
         <div class="column">
-            <div class="card card-content content">
-                <div class="columns is-mobile">
-                    <div class="column">
-                        <span class="icon">
-                            <i class="fas fa-wrench"></i>
-                        </span>
-                    </div>
-                    <div class="column">
-                        <span>年度更新</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="column">
-            <div class="card card-content content">
-                <div class="columns is-mobile">
-                    <div class="column">
-                        <span class="icon">
-                            <i class="fas fa-solid fa-users"></i>
-                        </span>
-                    </div>
-                    <div class="column">
-                        <span>引継ぎ</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="column">
           <div class="card card-content content">
             <a id="member-plus-console" target="_blank" style="color:inherit;">
               <div class="columns is-mobile">
@@ -60,6 +32,23 @@
                 </div>
             </a>
             </div>
+        </div>
+        <div class="column">
+            <div class="card card-content content">
+              <a id="member-retire-console" target="_blank" style="color:inherit;">
+                  <div class="columns is-mobile">
+                      <div class="column">
+                          <span class="icon">
+                          </span>
+                      </div>
+                      <div class="column">
+                          <span>引退</span>
+                      </div>
+                  </div>
+              </a>
+              </div>
+          </div>
+        <div class="column">
         </div>
     </div>
     <div class="columns m-3">
@@ -133,6 +122,7 @@
   url = document.getElementById("baseurl").value
   document.getElementById("member-plus-console").href = url + "/console?page=member_new"
   document.getElementById("member-update-console").href = url + "/console?page=member_edit"
+  document.getElementById("member-retire-console").href = url + "/console?page=member_retire"
   document.getElementById("portal-plus-console").href = url + "/console?page=form_new"
   document.getElementById("portal-manage-console").href = url + "/console?page=form_edit"
   document.getElementById("admintool-mail-post").href = url + "/console?page=admintool_mail_post"

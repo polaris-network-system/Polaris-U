@@ -19,7 +19,7 @@ function sendEmail(sheet, mailcol, consentcol, title, content) {
     var emails = '';
     for (let i = 1; i < sheet.getLastRow()+1; i++) {
         permission = sheet.getRange(i, (consentcol -1 )).getValue()
-        if ((sheet.getRange(i, consentcol).getValue() == 'true' || sheet.getRange(i, consentcol).getValue() == 'TRUE' || sheet.getRange(i, consentcol).getValue() == true) && (permission == 'Inside' || permission == 'Privilege' || permission == 'Admin' || permission == 'Adv)) {
+        if ((sheet.getRange(i, consentcol).getValue() == 'true' || sheet.getRange(i, consentcol).getValue() == 'TRUE' || sheet.getRange(i, consentcol).getValue() == true) && (permission == 'Inside' || permission == 'Privilege' || permission == 'Admin' || permission == 'Advisor')) {
             emails += sheet.getRange(i, mailcol).getValue() + ',';
         } else {
         }
@@ -65,10 +65,9 @@ function crossfindRow(sheet, key1, col1, key2, col2) {
 function graduation(sheet, key) {
     var dat = sheet.getDataRange().getValues(); //受け取ったシートのデータを二次元配列に取得
     var result = [];
-
-    for (var i = 1; i < dat.length; i++) {
-        if (Number(dat[i][0]) < (key + 1) * 10000 && dat[i][5] == '部員') {
-            result.push(i + 1);
+    for (var i = 0; i < dat.length; i++) {
+        if (Number(dat[i][0]) < ((Number(key) + 1) * 10000) && dat[i][5] == '部員') {
+            result.push(i+1);
         }
     }
     return result;
@@ -192,7 +191,6 @@ function getData() {
     var item_db = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('機材情報');
     var absence_db = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('欠席連絡');
     var form_db = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('フォーム情報');
-
     switch (arguments[0]) {
         case 'index':
             findNearDataRow(schedule_db);
@@ -294,13 +292,6 @@ function getData() {
         case 'member_list_search':
             member_db.getRange(2, 1, member_db.getLastRow() - 1, member_db.getLastColumn()-1).sort({ column: 2, ascending: true });
             return search(member_db, arguments[1]);
-
-        case 'member_graduetion':
-            target = graduation(member_db, arguments[1]);
-            for (var i = 0; i < target.length; i++) {
-                member_db.getRange(target[i], 6).setValue('引退');
-            }
-            return;
 
         case 'member_edit_inquery':
             // ["API名",学籍番号]
@@ -512,6 +503,16 @@ function sendData() {
             member_db.getRange(findRow(member_db, arguments[1], 1), 2).setValue(arguments[2]);
             member_db.getRange(member_db.getLastRow(), 2).setNumberFormat('@');
             return [];
+        
+        case 'member_graduetion':
+            target = graduation(member_db, arguments[1]);
+            for (var i = 0; i < target.length; i++) {
+                member_db.getRange(target[i], 6).setValue('引退');
+                member_db.getRange(target[i], 8).setValue('false');
+                var tmp_class_number = member_db.getRange(target[i],2).getValue()
+                member_db.getRange(target[i],2).setValue(Number(("9"+String(tmp_class_number))))
+            }
+            return;
 
         case 'member_delete':
             member_db.deleteRow(arguments[1]);
@@ -521,5 +522,6 @@ function sendData() {
             var signature = "\n\nこのメールは" + member_db.getRange(findRow(member_db, LOGIN_USER, 5), 4).getValue() + "さんによって作成されました\n\n"
             sendEmail(member_db,5,8,arguments[1],arguments[2] + signature)
             return ["ok"];
+        
     }
 }

@@ -53,6 +53,7 @@
     <body>
       <? if(page == "member_new"){ ?><?!= HtmlService.createHtmlOutputFromFile("member/new").getContent(); ?><? } ?>
       <? if(page == "member_edit"){ ?><?!= HtmlService.createHtmlOutputFromFile("member/edit").getContent(); ?><? } ?>
+      <? if(page == "member_retire"){ ?><?!= HtmlService.createHtmlOutputFromFile("member/graduation").getContent(); ?><? } ?>
       <? if(page == "form_new"){ ?><?!= HtmlService.createHtmlOutputFromFile("form/new").getContent(); ?><? } ?>
       <? if(page == "admintool_mail_post"){ ?><?!= HtmlService.createHtmlOutputFromFile("admintool/mailpost").getContent(); ?><? } ?>
     </body>
