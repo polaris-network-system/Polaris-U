@@ -359,9 +359,9 @@ function sendData() {
                 (Number(date_array[2].split(':')[0].split('T')[1]) + 1) +
                 date_array[2].split(':')[1] +
                 '00&details=' +
-                arguments[4] + '">カレンダーに追加</a>\n';
+                arguments[4] + '">カレンダーに追加</a>\n\n';
             sendEmail(member_db, 5, 8, title, content + url);
-            return [arguments[2], String(arguments[2])];
+            return [arguments[2], String(arguments[1])];
 
         case 'schedule_update':
             var row = arguments[1];
