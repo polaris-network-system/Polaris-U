@@ -289,12 +289,14 @@ function getData() {
             // コード認証
             judge = findMultiRow(member_db, arguments[1], 1);
             if (permission == 'Privilege' || permission == 'Admin' || permission == 'Advisor') {
-                return ['bad'];
-            } else if (judge.length != 0) {
-                return ['already'];
+                if (judge.length != 0) {
+                    return ['already'];
+                } else {
+                    // 学校アカウントのメールアドレス直書き
+                    return ['ok', arguments[1] + '@oks.city-saitama.ed.jp'];
+                }
             } else {
-                // 学校アカウントのメールアドレス直書き
-                return ['ok', arguments[1] + '@oks.city-saitama.ed.jp'];
+                return ['bad'];
             }
 
         case 'member_list_search':

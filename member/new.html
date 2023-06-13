@@ -42,7 +42,7 @@
     });
     function showThings_inquiry(things) {
         if (things[0] == 'bad') {
-            document.getElementById('result').textContent = '入力された認証コードは不正です';
+            document.getElementById('result').textContent = 'ユーザー作成権限がありません';
             btn_inquiry.value = '照会';
             document.getElementById('btn').disabled = true;
         } else if (things[0] == 'already') {
