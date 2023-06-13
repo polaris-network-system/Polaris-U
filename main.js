@@ -9,6 +9,36 @@ function findRow(sheet, val, col) {
     return 0;
 }
 
+// TODO
+// GASのデプロイテストでエラー
+// sendEmailと呼び出し元をコメントアウトしても治らず
+// 要検証
+// 2023/06/12
+
+// Gmailの送信
+function sendEmail(sheet, mailcol, consentcol, title, content) {
+    // sheet : ユーザーDBのシートオブジェクト
+    // mailcol : メールアドレスが記載されてる列
+    // consentcol : メール配信同意(true or false)
+    // title : メールのタイトル
+    // contet : 本文、呼び出し元関数で生成する
+    var emails = '';
+    for (let i = 1; i < sheet.getLastRow()+1; i++) {
+        if (sheet.getRange(i, consentcol).getValue() == 'true' || sheet.getRange(i, consentcol).getValue() == 'TRUE' || sheet.getRange(i, consentcol).getValue() == true) {
+            emails += sheet.getRange(i, mailcol).getValue() + ',';
+        } else {
+        }
+    }
+    var header = '<p class="navbar-item is-size-2 pt-1 pr-6" style="font-family: "Noto Sans JP", sans-serif; color: #004aad">Polaris-Uよりお知らせします</p>';
+    var footer = '<strong>Polaris-U</strong><br><p>配信停止はMypageから手続きしてください</p>';
+    var Draft = GmailApp.createDraft("", title, "body" , {
+        name: "Polaris-U",
+        htmlBody: (header+content+footer).replaceAll('\n', '<br>'),
+        bcc: emails
+    });
+    Draft.send()
+}
+
 function findMultiRow(sheet, val, col) {
     var dat = sheet.getDataRange().getValues(); //受け取ったシートのデータを二次元配列に取得
     var targetRows = [];
@@ -115,7 +145,7 @@ function doGet(e) {
             return e.parameter.page;
             //return HtmlService.createTemplateFromFile("templete");
         } catch (e) {
-            return "dummy";
+            return 'dummy';
         }
     })();
 
@@ -145,7 +175,7 @@ function getData() {
     var LOGIN_USER = Session.getActiveUser().getEmail();
     var schedule_db = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('部活日程');
     var member_db = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('部員登録情報');
-    var permission = member_db.getRange(findRow(member_db, LOGIN_USER, 5), 7).getValue()
+    var permission = member_db.getRange(findRow(member_db, LOGIN_USER, 5), 7).getValue();
     var item_db = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('機材情報');
     var absence_db = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('欠席連絡');
     var form_db = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('フォーム情報');
@@ -157,8 +187,8 @@ function getData() {
             return schedule_db.getRange(2, 1, 1, schedule_db.getLastColumn()).getValues();
 
         case 'users':
-          member_db.getRange(2, 1, member_db.getLastRow() - 1, member_db.getLastColumn()).sort({ column: 2, ascending: true });
-          return search(member_db, '部員');
+            member_db.getRange(2, 1, member_db.getLastRow() - 1, member_db.getLastColumn()).sort({ column: 2, ascending: true });
+            return search(member_db, '部員');
 
         case 'schedule_list':
             findNearDataRow(schedule_db);
@@ -177,9 +207,9 @@ function getData() {
                     absence_result.push(absence_list[i]);
                 }
             }
-            
+
             // 活動作成者および特権・管理・顧問のみ編集・出席確認などの管理機能が使用可(allow)
-            if (member_db.getRange(findRow(member_db, LOGIN_USER, 5), 4).getValue() == String(schedule[0][8]) || permission == "Privilege" || permission == "Admin" || permission == "Advisor") {
+            if (member_db.getRange(findRow(member_db, LOGIN_USER, 5), 4).getValue() == String(schedule[0][8]) || permission == 'Privilege' || permission == 'Admin' || permission == 'Advisor') {
                 var permission = 'allow';
             } else {
                 var permission = 'reject';
@@ -239,17 +269,17 @@ function getData() {
         case 'member_new_inquery':
             // コード認証
             judge = findMultiRow(member_db, arguments[1], 1);
-            if ( permission == "Privilege" || permission == "Admin" || permission == "Advisor") {
+            if (permission == 'Privilege' || permission == 'Admin' || permission == 'Advisor') {
                 return ['bad'];
             } else if (judge.length != 0) {
                 return ['already'];
             } else {
                 // 学校アカウントのメールアドレス直書き
-                return ['ok',(arguments[1]+"@oks.city-saitama.ed.jp")];
+                return ['ok', arguments[1] + '@oks.city-saitama.ed.jp'];
             }
 
         case 'member_list_search':
-            member_db.getRange(2, 1, member_db.getLastRow() - 1, member_db.getLastColumn()).sort({ column: 2, ascending: true });
+            member_db.getRange(2, 1, member_db.getLastRow() - 1, member_db.getLastColumn()-1).sort({ column: 2, ascending: true });
             return search(member_db, arguments[1]);
 
         case 'member_graduetion':
@@ -306,7 +336,32 @@ function sendData() {
             schedule_db.getRange(schedule_db.getLastRow(), 3).setNumberFormat('@');
             schedule_db.getRange(schedule_db.getLastRow(), 5).setNumberFormat('@');
             schedule_db.getRange(schedule_db.getLastRow(), 10).setNumberFormat('@');
-            return [arguments[2], String(arguments[1])];
+
+            // メール配信関係
+            var title = '新規部活日程が追加されました';
+            var content = '活動内容：' + arguments[2];
+            content += '\n活動日時:' + date_array[0] + '/' + date_array[1] + '/' + date_array[2].split('T')[0] + '(' + day_youbi + ') ' + date_array[2].split('T')[1];
+            content += '\n活動場所：' + arguments[3];
+            content += '\n備考　　：' + arguments[4];
+            var url =
+                '\n<a href="https://www.google.com/calendar/render?action=TEMPLATE&text=' +
+                arguments[2] +
+                '&dates=' +
+                date_array[0] +
+                date_array[1] +
+                date_array[2].split(':')[0] +
+                date_array[2].split(':')[1] +
+                '00/' +
+                date_array[0] +
+                date_array[1] +
+                date_array[2].split(':')[0].split('T')[0] +
+                'T' +
+                (Number(date_array[2].split(':')[0].split('T')[1]) + 1) +
+                date_array[2].split(':')[1] +
+                '00&details=' +
+                arguments[4] + '">カレンダーに追加</a>\n';
+            sendEmail(member_db, 5, 8, title, content + url);
+            return [arguments[2], String(arguments[2])];
 
         case 'schedule_update':
             var row = arguments[1];
@@ -317,19 +372,8 @@ function sendData() {
             var day_youbi = WeekChars[hold_day.getDay()];
             schedule_db
                 .getRange(row, 1, 1, 8)
-                .setValues([
-                    [
-                        date_array[0],
-                        date_array[1],
-                        date_array[2].split('T')[0],
-                        day_youbi,
-                        String(date_array[2].split('T')[1]),
-                        arguments[3],
-                        arguments[4],
-                        arguments[5],
-                    ],
-                ]);
-            schedule_db.getRange(row,10,1,1).setValue(arguments[2])
+                .setValues([[date_array[0], date_array[1], date_array[2].split('T')[0], day_youbi, String(date_array[2].split('T')[1]), arguments[3], arguments[4], arguments[5]]]);
+            schedule_db.getRange(row, 10, 1, 1).setValue(arguments[2]);
             schedule_db.getRange(row, 10).setNumberFormat('yyyy"-"mm"-"dd hh":"mm');
             schedule_db.getRange(row, 1).setNumberFormat('@');
             schedule_db.getRange(row, 2).setNumberFormat('@');
@@ -384,12 +428,12 @@ function sendData() {
 
         case 'absence_new_slist':
             //[aid,atype,acontent,学籍番号(任意)]
-            if(arguments[4]){
-              studentid = arguments[4]
-              studentname = member_db.getRange(findRow(member_db, studentid, 1), 4).getValue()
-            }else{
-              studentid = member_db.getRange(findRow(member_db, LOGIN_USER, 5), 1).getValue()
-              studentname = member_db.getRange(findRow(member_db, LOGIN_USER, 5), 4).getValue()
+            if (arguments[4]) {
+                studentid = arguments[4];
+                studentname = member_db.getRange(findRow(member_db, studentid, 1), 4).getValue();
+            } else {
+                studentid = member_db.getRange(findRow(member_db, LOGIN_USER, 5), 1).getValue();
+                studentname = member_db.getRange(findRow(member_db, LOGIN_USER, 5), 4).getValue();
             }
             absence_db.appendRow([
                 studentid,
@@ -439,13 +483,13 @@ function sendData() {
 
         case 'member_new':
             //["API名","固有学籍番号","学籍暗号","部署","名前","メールアドレス"]
-            member_db.appendRow([arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], '部員',"Inside"]);
+            member_db.appendRow([arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], '部員', 'Inside']);
             member_db.getRange(form_db.getLastRow(), 1).setNumberFormat('@');
             member_db.getRange(form_db.getLastRow(), 2).setNumberFormat('@');
             return [arguments[1], arguments[4]];
 
         case 'member_update':
-            member_db.getRange(findRow(member_db, arguments[1], 1), 1, 1, 7).setValues([[arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6],arguments[7]]]);
+            member_db.getRange(findRow(member_db, arguments[1], 1), 1, 1, 7).setValues([[arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7]]]);
             member_db.getRange(member_db.getLastRow(), 1).setNumberFormat('@');
             member_db.getRange(member_db.getLastRow(), 2).setNumberFormat('@');
             return [arguments[1], arguments[4]];
