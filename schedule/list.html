@@ -26,7 +26,7 @@
                             </div>
                         </div>
                         <button id="d_att" class="button is-link is-rounded is-light js-modal-trigger" data-target="attmodal" disabled>出席確認</button>
-                        <br><br>
+                        <br /><br />
                         <strong>部活予定の編集</strong>
                         <input type="hidden" id="sid" />
                         <div class="my-4">
@@ -170,40 +170,39 @@
             document.getElementById('d_att').setAttribute('disabled', '');
         }
     }
-    function getusers(){
-      if (document.getElementById('attflag').value == "unload"){
-        document.getElementById('att_div').textContent = "Loading..."
-        document.getElementById('attflag').value = "loaded"
-        google.script.run.withSuccessHandler(showThingsUsers).getData('users');
-      }
+    function getusers() {
+        if (document.getElementById('attflag').value == 'unload') {
+            document.getElementById('att_div').textContent = 'Loading...';
+            document.getElementById('attflag').value = 'loaded';
+            google.script.run.withSuccessHandler(showThingsUsers).getData('users');
+        }
     }
-    function showThingsUsers(things){
-      var data_area = document.getElementById('att_div');
+    function showThingsUsers(things) {
+        var data_area = document.getElementById('att_div');
         data_area.textContent = '';
         for (var i = 1; i < things.length; i++) {
-            element_tmp = '<div class="mx-3 my-2"><input type="checkbox" class="usercheckbox" id="'
-            element_tmp += String(things[i][0])
-            element_tmp += '" ><label class="mx-1">'
+            element_tmp = '<div class="mx-3 my-2"><input type="checkbox" class="usercheckbox" id="';
+            element_tmp += String(things[i][0]);
+            element_tmp += '" ><label class="mx-1">';
             element_tmp += String(things[i][1]) + String(things[i][3]) + '</label></div>';
             data_area.insertAdjacentHTML('beforebegin', element_tmp);
         }
         var btn_att_submit = document.getElementById('btn_att');
         btn_att_submit.addEventListener('click', function () {
-          window.alert("欠席登録を実行します")
-          const AttElem = document.getElementsByClassName("usercheckbox");
-          for (var i=0;i<AttElem.length;i++){
-            if (AttElem[i].checked == true){
-              $(function () {
-                google.script.run
-                  .withSuccessHandler(showThingsAbsence_ogz)
-                  // TODO 学籍番号を引数に含める
-                  .sendData('absence_new_slist', document.getElementById('attid').value, "欠席","主催者により欠席登録されました",AttElem[i].id);
-              });
+            window.alert('欠席登録を実行します');
+            const AttElem = document.getElementsByClassName('usercheckbox');
+            for (var i = 0; i < AttElem.length; i++) {
+                if (AttElem[i].checked == true) {
+                    $(function () {
+                        google.script.run
+                            .withSuccessHandler(showThingsAbsence_ogz)
+                            // TODO 学籍番号を引数に含める
+                            .sendData('absence_new_slist', document.getElementById('attid').value, '欠席', '主催者により欠席登録されました', AttElem[i].id);
+                    });
+                }
             }
-          }
         });
-        function showThingsAbsence_ogz(things) {
-        }
+        function showThingsAbsence_ogz(things) {}
     }
     function openModal($el) {
         $el.classList.add('is-active');
@@ -220,9 +219,9 @@
                 if (target == 'detail') {
                     getdetails(id);
                 } else if (target == 'absence') {
-                  document.getElementById('aid').value = id;
-                } else if(target == 'attmodal'){
-                  getusers();
+                    document.getElementById('aid').value = id;
+                } else if (target == 'attmodal') {
+                    getusers();
                 }
                 openModal($target);
             });
@@ -252,11 +251,12 @@
     function showThingsList(things) {
         var data_area = document.getElementById('scheduledata');
         data_area.textContent = '';
-        if(things[2]){
-          element_tmp = '<div class="hero hero-body"><p class="title">' + things[2] + '</p></div>'
-          data_area.insertAdjacentHTML('beforebegin', element_tmp);
-        }else{
-          
+        if (things[2]) {
+            element_tmp = '<div class="hero hero-body"><p class="title">' + things[2] + '</p></div>';
+            data_area.insertAdjacentHTML('beforebegin', element_tmp);
+            createTrigger();
+            return;
+        } else {
         }
         for (var i = 0; i < things[1].length; i++) {
             element_tmp = '';

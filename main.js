@@ -17,21 +17,25 @@ function sendEmail(sheet, mailcol, consentcol, title, content) {
     // title : メールのタイトル
     // contet : 本文、呼び出し元関数で生成する
     var emails = '';
-    for (let i = 1; i < sheet.getLastRow()+1; i++) {
-        permission = sheet.getRange(i, (consentcol -1 )).getValue()
-        if ((sheet.getRange(i, consentcol).getValue() == 'true' || sheet.getRange(i, consentcol).getValue() == 'TRUE' || sheet.getRange(i, consentcol).getValue() == true) && (permission == 'Inside' || permission == 'Privilege' || permission == 'Admin' || permission == 'Advisor')) {
+    for (let i = 1; i < sheet.getLastRow() + 1; i++) {
+        permission = sheet.getRange(i, consentcol - 1).getValue();
+        if (
+            (sheet.getRange(i, consentcol).getValue() == 'true' || sheet.getRange(i, consentcol).getValue() == 'TRUE' || sheet.getRange(i, consentcol).getValue() == true) &&
+            (permission == 'Inside' || permission == 'Privilege' || permission == 'Admin' || permission == 'Advisor')
+        ) {
             emails += sheet.getRange(i, mailcol).getValue() + ',';
         } else {
         }
     }
     var header = '<p class="navbar-item is-size-2 pt-1 pr-6" style="font-family: "Noto Sans JP", sans-serif; color: #004aad">Polaris-Uよりお知らせします</p>';
-    var footer = '<br><br><br><br><strong>放送部活動支援プラットフォーム Polaris-U</strong><br><p>配信停止や配信の再開は<a href="https://script.google.com/a/oks.city-saitama.ed.jp/macros/s/AKfycbzmdIa50dzjEQYjV1Y4jKZS0PoEKeYFEZfpBHR8V0U/exec/settings_mail">こちら</a>からアクセスしてください<br>URLの末尾が「/exec/settings_email」になるようにしてアクセスすることでも可能です';
-    var Draft = GmailApp.createDraft("", title, "body" , {
-        name: "Polaris-U",
-        htmlBody: (header+content+footer).replaceAll('\n', '<br>'),
-        bcc: emails
+    var footer =
+        '<br><br><br><br><strong>放送部活動支援プラットフォーム Polaris-U</strong><br><p>配信停止や配信の再開は<a href="https://script.google.com/a/oks.city-saitama.ed.jp/macros/s/AKfycbzmdIa50dzjEQYjV1Y4jKZS0PoEKeYFEZfpBHR8V0U/exec/settings_mail">こちら</a>からアクセスしてください<br>URLの末尾が「/exec/settings_email」になるようにしてアクセスすることでも可能です';
+    var Draft = GmailApp.createDraft('', title, 'body', {
+        name: 'Polaris-U',
+        htmlBody: (header + content + footer).replaceAll('\n', '<br>'),
+        bcc: emails,
     });
-    Draft.send()
+    Draft.send();
 }
 
 function findMultiRow(sheet, val, col) {
@@ -67,14 +71,14 @@ function graduation(sheet, key) {
     var result = [];
     for (var i = 0; i < dat.length; i++) {
         if (Number(dat[i][0]) < Number((key + 1) * 10000) && dat[i][5] == '部員') {
-            result.push(i+1);
+            result.push(i + 1);
         }
     }
     return result;
 }
 
 function findNearDataRow(sheet) {
-    var result = []
+    var result = [];
     var dat = sheet.getDataRange().getValues(); //受け取ったシートのデータを二次元配列に取得
 
     //Dateオブジェクトからインスタンスを生成
@@ -82,17 +86,17 @@ function findNearDataRow(sheet) {
     for (var i = 0; i < dat.length; i++) {
         var dt = new Date(Number(dat[i][0]), Number(Number(dat[i][1]) - 1), Number(Number(dat[i][2]) + 1));
         if (dt < today) {
-            result.push(i+1)
+            result.push(i + 1);
         } else {
             break;
         }
     }
-    var result_diff = 0
-    console.log(result)
-    for (var j=0; j< result.length; j++){
-      sheet.deleteRow((result[j]-result_diff))
-      console.log(result[j])
-      result_diff += 1
+    var result_diff = 0;
+    console.log(result);
+    for (var j = 0; j < result.length; j++) {
+        sheet.deleteRow(result[j] - result_diff);
+        console.log(result[j]);
+        result_diff += 1;
     }
 }
 
@@ -131,14 +135,13 @@ function twoInt(number) {
 function doGet(e) {
     // URLのexec/(またはdev/)以降を取得
     var page = e.pathInfo ? e.pathInfo : 'index';
-    var settings_flag = ""
+    var settings_flag = '';
 
     // 設定変更用のURLを矯正
-    if(page == "settings_mail"){
-        settings_flag = "settings_email"
-        page = 'index'
+    if (page == 'settings_mail') {
+        settings_flag = 'settings_email';
+        page = 'index';
     } else {
-
     }
     // 該当するテンプレートを取得する
     var template = (() => {
@@ -171,12 +174,12 @@ function doGet(e) {
     }
 
     // 設定変更
-    if (settings_flag == "settings_email"){
-        var now_setting = member_db.getRange(findRow(member_db, LOGIN_USER, 5), 8).getValue()
-        if (now_setting == "true" || now_setting == true){
-            member_db.getRange(findRow(member_db, LOGIN_USER, 5), 8).setValue("false")
-        }else if(now_setting == "false" || now_setting == false){
-            member_db.getRange(findRow(member_db, LOGIN_USER, 5), 8).setValue("true")
+    if (settings_flag == 'settings_email') {
+        var now_setting = member_db.getRange(findRow(member_db, LOGIN_USER, 5), 8).getValue();
+        if (now_setting == 'true' || now_setting == true) {
+            member_db.getRange(findRow(member_db, LOGIN_USER, 5), 8).setValue('false');
+        } else if (now_setting == 'false' || now_setting == false) {
+            member_db.getRange(findRow(member_db, LOGIN_USER, 5), 8).setValue('true');
         }
     }
 
@@ -210,13 +213,14 @@ function getData() {
             return search(member_db, '部員');
 
         case 'schedule_list':
-            findNearDataRow(schedule_db);
-            try{
-              schedule_db.getDataRange().sort({ column: 10, ascending: true });
-            }catch(e){
-              var message = "活動予定がありません"
+            try {
+                findNearDataRow(schedule_db);
+                scheduleData = schedule_db.getRange(1, 1, schedule_db.getLastRow(), schedule_db.getLastColumn()).getValues();
+                return [member_db.getRange(findRow(member_db, LOGIN_USER, 5), 7).getValue(), scheduleData, ''];
+            } catch (e) {
+                var message = '活動予定がありません';
+                return [member_db.getRange(findRow(member_db, LOGIN_USER, 5), 7).getValue(), undefined, message];
             }
-            return [member_db.getRange(findRow(member_db, LOGIN_USER, 5), 7).getValue(), schedule_db.getRange(1, 1, schedule_db.getLastRow(), schedule_db.getLastColumn()).getValues(),message];
 
         case 'schedule_detail':
             var schedule = schedule_db.getRange(arguments[1], 1, 1, schedule_db.getLastColumn()).getValues();
@@ -302,7 +306,7 @@ function getData() {
             }
 
         case 'member_list_search':
-            member_db.getRange(2, 1, member_db.getLastRow() - 1, member_db.getLastColumn()-1).sort({ column: 2, ascending: true });
+            member_db.getRange(2, 1, member_db.getLastRow() - 1, member_db.getLastColumn() - 1).sort({ column: 2, ascending: true });
             return search(member_db, arguments[1]);
 
         case 'member_edit_inquery':
@@ -355,7 +359,7 @@ function sendData() {
 
             // メール配信関係
             var title = '新規部活日程が追加されました';
-            var signature = member_db.getRange(findRow(member_db, LOGIN_USER, 5), 4).getValue() + "さんによって新規部活動予定が作成されました\n\n"
+            var signature = member_db.getRange(findRow(member_db, LOGIN_USER, 5), 4).getValue() + 'さんによって新規部活動予定が作成されました\n\n';
             var content = '活動内容：' + arguments[2];
             content += '\n活動日時:' + date_array[0] + '/' + date_array[1] + '/' + date_array[2].split('T')[0] + '(' + day_youbi + ') ' + date_array[2].split('T')[1];
             content += '\n活動場所：' + arguments[3];
@@ -376,7 +380,8 @@ function sendData() {
                 (Number(date_array[2].split(':')[0].split('T')[1]) + 1) +
                 date_array[2].split(':')[1] +
                 '00&details=' +
-                arguments[4] + '">カレンダーに追加</a>\n\n';
+                arguments[4] +
+                '">カレンダーに追加</a>\n\n';
             sendEmail(member_db, 5, 8, title, signature + content + url);
             return [arguments[2], String(arguments[1])];
 
@@ -515,25 +520,24 @@ function sendData() {
             member_db.getRange(findRow(member_db, arguments[1], 1), 2).setValue(arguments[2]);
             member_db.getRange(member_db.getLastRow(), 2).setNumberFormat('@');
             return [];
-        
+
         case 'member_graduetion':
             target = graduation(member_db, arguments[1]);
             for (var i = 0; i < target.length; i++) {
                 member_db.getRange(target[i], 6).setValue('引退');
                 member_db.getRange(target[i], 8).setValue('false');
-                var tmp_class_number = member_db.getRange(target[i],2).getValue()
-                member_db.getRange(target[i],2).setValue(Number(("9"+String(tmp_class_number))))
+                var tmp_class_number = member_db.getRange(target[i], 2).getValue();
+                member_db.getRange(target[i], 2).setValue(Number('9' + String(tmp_class_number)));
             }
             return;
 
         case 'member_delete':
             member_db.deleteRow(arguments[1]);
             return [];
-        
+
         case 'mail_send':
-            var signature = "\n\nこのメールは" + member_db.getRange(findRow(member_db, LOGIN_USER, 5), 4).getValue() + "さんによって作成されました\n\n"
-            sendEmail(member_db,5,8,arguments[1],arguments[2] + signature)
-            return ["ok"];
-        
+            var signature = '\n\nこのメールは' + member_db.getRange(findRow(member_db, LOGIN_USER, 5), 4).getValue() + 'さんによって作成されました\n\n';
+            sendEmail(member_db, 5, 8, arguments[1], arguments[2] + signature);
+            return ['ok'];
     }
 }
